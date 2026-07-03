@@ -281,8 +281,8 @@ function Hero() {
     },
     {
       image: bannerMateraWood,
-      title: "Matera de Auto",
-      subtitle: "Detalles artesanales en madera y cuero noble."
+      title: "Colección Almendra",
+      subtitle: "Nuestra familia de productos artesanales hechos a mano."
     }
   ], []);
 
