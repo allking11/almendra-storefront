@@ -32,63 +32,15 @@ import exteriorCow from "../fotos exteriores2.jpeg";
 import exteriorLine from "../fotos exteriores3.jpeg";
 
 // Generated assets
-import bolsoMila from "../bolso_mila.jpg";
-import carteraClara from "../cartera_clara.jpg";
-import billeteraSofia from "../billetera_sofia.jpg";
-import mochilaOlivia from "../mochila_olivia.jpg";
-import materaAuto from "../matera_auto.jpg";
-import carteraCrescent from "../cartera_crescent.jpg";
-import billeteraMujer from "../billetera_mujer.jpg";
-import neceserHombre from "../neceser_hombre.jpg";
-import fringeBag from "../fringe_bag.jpg";
 import procesoCorte from "../proceso_corte.jpg";
 import procesoCostura from "../proceso_costura.jpg";
 import procesoLogo from "../proceso_logo.jpg";
+import fallbackBilleteraMujer from "../billetera_mujer.jpg";
+import fringeBag from "../fringe_bag.jpg";
+import { catalogProducts } from "./assets/catalogoData";
 
 const WHATSAPP_URL =
   "https://wa.me/59896909600?text=Hola%2C%20quiero%20recibir%20m%C3%A1s%20informaci%C3%B3n%20sobre%20los%20productos%20de%20Almendra.";
-
-const CartContext = createContext(null);
-
-const carouselProducts = [
-  {
-    id: "bolso-mila",
-    name: "Bolso Mila",
-    price: 229000,
-    image: bolsoMila,
-    description: "Bolso amplio de hombro confeccionado en cuero vacuno graneado de alta calidad.",
-  },
-  {
-    id: "cartera-clara",
-    name: "Cartera Clara",
-    price: 189000,
-    image: carteraClara,
-    description: "Cartera bandolera estructurada en cuero natural con correa regulable.",
-  },
-  {
-    id: "billetera-sofia",
-    name: "Billetera Sofía",
-    price: 99000,
-    image: billeteraSofia,
-    description: "Billetera clásica compacta de cuero con múltiples compartimentos.",
-  },
-  {
-    id: "mochila-olivia",
-    name: "Mochila Olivia",
-    price: 259000,
-    image: mochilaOlivia,
-    description: "Mochila urbana de cuero legítimo con detalles de costura artesanales.",
-  },
-];
-
-const categories = [
-  { name: "Materas de auto", image: materaAuto },
-  { name: "Materas tipo cartera", image: carteraCow },
-  { name: "Carteras de mujer", image: carteraCrescent },
-  { name: "Billeteras de mujer", image: billeteraMujer },
-  { name: "Billeteras de hombre", image: billeteraSofia },
-  { name: "Bolsos de mano hombre (neceser)", image: neceserHombre },
-];
 
 function useCart() {
   const context = useContext(CartContext);
@@ -96,10 +48,14 @@ function useCart() {
   return context;
 }
 
+const CartContext = createContext(null);
+
 function CartProvider({ children }) {
   const [items, setItems] = useState([]);
   const [open, setOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [catalogFilter, setCatalogFilter] = useState("Todos");
 
   const quantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -109,12 +65,21 @@ function CartProvider({ children }) {
     );
   };
 
-  const addItem = (product) => {
+  const addItem = (product, selectedVariation = "Único") => {
+    const variations = product.variations || {};
+    const imgList = variations[selectedVariation] || [];
+    const variationImage = imgList[0] || product.image;
+    
+    const cartItemId = `${product.id}-${selectedVariation}`;
+    const cartItemName = selectedVariation !== "Único"
+      ? `${product.name} (${selectedVariation})`
+      : product.name;
+
     setItems((current) => {
-      const found = current.find((item) => item.id === product.id);
+      const found = current.find((item) => item.id === cartItemId);
       if (found) {
         return current.map((item) =>
-          item.id === product.id
+          item.id === cartItemId
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
@@ -122,7 +87,10 @@ function CartProvider({ children }) {
       return [
         ...current,
         {
-          ...product,
+          id: cartItemId,
+          name: cartItemName,
+          price: product.price,
+          image: variationImage,
           quantity: 1,
         },
       ];
@@ -166,8 +134,8 @@ function CartProvider({ children }) {
     () => ({
       items,
       quantity,
-      open,
       favorites,
+      open,
       setOpen,
       addItem,
       increment,
@@ -175,8 +143,12 @@ function CartProvider({ children }) {
       toggleFavorite,
       formatPrice,
       checkout,
+      selectedProduct,
+      setSelectedProduct,
+      catalogFilter,
+      setCatalogFilter,
     }),
-    [items, open, quantity, favorites]
+    [items, open, quantity, favorites, selectedProduct, catalogFilter]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -328,9 +300,19 @@ function Hero() {
 }
 
 function FeaturedCollection() {
-  const { addItem, toggleFavorite, favorites, formatPrice } = useCart();
+  const { toggleFavorite, favorites, formatPrice, setSelectedProduct } = useCart();
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef(null);
+
+  const featured = useMemo(() => {
+    const items = [];
+    const ids = ["prod-cartera-cuero", "prod-matera-cartera", "prod-matera-auto", "prod-billetera-hombre"];
+    ids.forEach(id => {
+      const match = catalogProducts.find(p => p.id === id);
+      if (match) items.push(match);
+    });
+    return items.length === 4 ? items : catalogProducts.slice(0, 4);
+  }, []);
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
@@ -370,10 +352,10 @@ function FeaturedCollection() {
             </div>
             <div className="mt-10 lg:mt-20">
               <a
-                href="#contacto"
+                href="#catalogo"
                 className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-chocolate hover:text-cuero transition-colors uppercase border-b border-chocolate pb-1"
               >
-                Ver toda la colección <ArrowRight size={14} />
+                Ver catálogo completo <ArrowRight size={14} />
               </a>
             </div>
           </Reveal>
@@ -385,55 +367,62 @@ function FeaturedCollection() {
               onScroll={handleScroll}
               className="flex md:grid md:grid-cols-4 gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4"
             >
-              {carouselProducts.map((product) => (
-                <div
-                  key={product.id}
-                  className="min-w-full sm:min-w-[50%] md:min-w-0 snap-start snap-always group relative flex flex-col"
-                >
-                  {/* Image wrapper */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-arena/20 rounded-[4px] shadow-sm">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-                    {/* Add to Cart Overlay */}
-                    <div className="absolute inset-0 bg-chocolate/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+              {featured.map((product) => {
+                const firstVar = Object.keys(product.variations)[0];
+                const cover = product.variations[firstVar][0];
+                return (
+                  <div
+                    key={product.id}
+                    className="min-w-full sm:min-w-[50%] md:min-w-0 snap-start snap-always group relative flex flex-col cursor-pointer"
+                    onClick={() => setSelectedProduct(product)}
+                  >
+                    {/* Image wrapper */}
+                    <div className="relative aspect-[3/4] overflow-hidden bg-arena/20 rounded-[4px] shadow-sm">
+                      <img
+                        src={cover}
+                        alt={product.name}
+                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      />
+                      {/* Add to Cart Overlay */}
+                      <div className="absolute inset-0 bg-chocolate/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+                        <button
+                          type="button"
+                          className="bg-crema text-chocolate text-[10px] font-bold tracking-widest uppercase py-3 px-5 hover:bg-cuero hover:text-white transition-colors duration-300"
+                        >
+                          Ver Detalles
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Details */}
+                    <div className="mt-4 flex items-start justify-between">
+                      <div>
+                        <h3 className="text-sm font-medium text-chocolate">
+                          {product.name}
+                        </h3>
+                        <p className="mt-1 text-xs text-chocolate/60">
+                          {formatPrice(product.price)}
+                        </p>
+                      </div>
                       <button
                         type="button"
-                        onClick={() => addItem(product)}
-                        className="bg-crema text-chocolate text-[10px] font-bold tracking-widest uppercase py-3 px-5 hover:bg-cuero hover:text-white transition-colors duration-300"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavorite(product.id);
+                        }}
+                        className="text-chocolate/60 hover:text-tierra transition-colors p-1"
+                        aria-label="Agregar a favoritos"
                       >
-                        Sumar al pedido
+                        <Heart
+                          size={16}
+                          weight={favorites.includes(product.id) ? "fill" : "regular"}
+                          className={favorites.includes(product.id) ? "text-cuero" : ""}
+                        />
                       </button>
                     </div>
                   </div>
-
-                  {/* Details */}
-                  <div className="mt-4 flex items-start justify-between">
-                    <div>
-                      <h3 className="text-sm font-medium text-chocolate">
-                        {product.name}
-                      </h3>
-                      <p className="mt-1 text-xs text-chocolate/60">
-                        {formatPrice(product.price)}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => toggleFavorite(product.id)}
-                      className="text-chocolate/60 hover:text-tierra transition-colors p-1"
-                      aria-label="Agregar a favoritos"
-                    >
-                      <Heart
-                        size={16}
-                        weight={favorites.includes(product.id) ? "fill" : "regular"}
-                        className={favorites.includes(product.id) ? "text-cuero" : ""}
-                      />
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Slider Dots */}
@@ -567,7 +556,7 @@ function EverydayBagPromo() {
     name: "The Everyday Bag",
     price: 239000,
     image: fringeBag,
-    description: "Cuero genuino. Interior reforzado. Hecho artesanalmente en Argentina.",
+    description: "Cuero genuino. Interior reforzado. Hecho artesanalmente en Uruguay.",
   };
 
   return (
@@ -579,7 +568,7 @@ function EverydayBagPromo() {
             THE EVERYDAY BAG
           </h2>
           <p className="mt-6 text-sm text-tierra font-semibold uppercase tracking-wider">
-            Cuero genuino. Interior reforzado. <br /> Hecho artesanalmente en Argentina.
+            Cuero genuino. Interior reforzado. <br /> Hecho artesanalmente en Uruguay.
           </p>
           <p className="mt-6 font-serif text-3xl font-medium text-chocolate">
             $ 239.000
@@ -588,7 +577,7 @@ function EverydayBagPromo() {
             <button
               type="button"
               onClick={() => addItem(promoProduct)}
-              className="bg-[#5C3F33] text-white px-8 py-4 text-xs font-semibold tracking-widest uppercase hover:bg-[#23120B] transition-colors"
+              className="bg-cuero text-white px-8 py-4 text-xs font-semibold tracking-widest uppercase hover:bg-[#200E08] transition-colors"
             >
               Comprar Ahora
             </button>
@@ -611,6 +600,34 @@ function EverydayBagPromo() {
 }
 
 function CategoryExplore() {
+  const { setCatalogFilter } = useCart();
+
+  const categoriesList = useMemo(() => [
+    { name: "Carteras", displayName: "Carteras" },
+    { name: "Materas", displayName: "Materas" },
+    { name: "Materas Auto", displayName: "Materas Auto" },
+    { name: "Billeteras Hombre", displayName: "Billeteras Hombre" },
+    { name: "Billeteras Mujer", displayName: "Billeteras Mujer" },
+    { name: "Bolso Mano Hombre", displayName: "Bolsos de Mano" }
+  ], []);
+
+  const getCategoryCover = (categoryName) => {
+    const prod = catalogProducts.find(p => p.category === categoryName);
+    if (prod) {
+      const firstVar = Object.keys(prod.variations)[0];
+      return prod.variations[firstVar][0];
+    }
+    return fallbackBilleteraMujer;
+  };
+
+  const handleCategoryClick = (categoryName) => {
+    setCatalogFilter(categoryName);
+    const element = document.getElementById("catalogo");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="px-6 md:px-12 py-24 bg-[#EADECF]/20">
       <div className="mx-auto max-w-7xl">
@@ -618,31 +635,36 @@ function CategoryExplore() {
           <h2 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] font-medium text-chocolate uppercase tracking-wider">
             Explorá por categoría
           </h2>
-          <a
-            href="#coleccion"
+          <button
+            type="button"
+            onClick={() => handleCategoryClick("Todos")}
             className="flex items-center gap-2 text-xs font-semibold tracking-widest text-chocolate hover:text-cuero transition-colors uppercase border-b border-chocolate pb-1"
           >
             Ver todos los productos <ArrowRight size={14} />
-          </a>
+          </button>
         </Reveal>
 
         <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
-          {categories.map((cat, idx) => (
+          {categoriesList.map((cat, idx) => (
             <Reveal key={idx} delay={idx * 0.05} className="group">
-              <a href="#coleccion" className="flex flex-col items-center">
+              <button
+                type="button"
+                onClick={() => handleCategoryClick(cat.name)}
+                className="w-full flex flex-col items-center text-left"
+              >
                 {/* Image */}
                 <div className="w-full aspect-[3/4] overflow-hidden rounded-[4px] bg-arena/20 shadow-sm mb-4">
                   <img
-                    src={cat.image}
-                    alt={cat.name}
+                    src={getCategoryCover(cat.name)}
+                    alt={cat.displayName}
                     className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                 </div>
                 {/* Label */}
-                <h3 className="text-xs font-bold text-chocolate tracking-wider text-center group-hover:text-cuero transition-colors uppercase max-w-[130px]">
-                  {cat.name}
+                <h3 className="text-xs font-bold text-chocolate tracking-wider text-center group-hover:text-cuero transition-colors uppercase max-w-[130px] mx-auto">
+                  {cat.displayName}
                 </h3>
-              </a>
+              </button>
             </Reveal>
           ))}
         </div>
@@ -908,6 +930,254 @@ function NewsletterBanner() {
   );
 }
 
+function CatalogSection() {
+  const { formatPrice, setSelectedProduct, catalogFilter, setCatalogFilter } = useCart();
+  
+  const tabs = useMemo(() => ["Todos", "Carteras", "Materas", "Materas Auto", "Billeteras Hombre", "Billeteras Mujer", "Bolso Mano Hombre"], []);
+  
+  const filteredProducts = useMemo(() => {
+    if (catalogFilter === "Todos") return catalogProducts;
+    return catalogProducts.filter(p => p.category === catalogFilter);
+  }, [catalogFilter]);
+
+  return (
+    <section id="catalogo" className="px-6 md:px-12 py-24 bg-crema border-t border-arena/20">
+      <div className="mx-auto max-w-7xl">
+        <div className="text-center max-w-xl mx-auto mb-16">
+          <p className="text-[10px] tracking-[0.25em] font-semibold text-tierra uppercase">Nuestro Catálogo completo</p>
+          <h2 className="mt-4 font-serif text-[clamp(2rem,3.5vw,2.75rem)] text-chocolate font-medium uppercase tracking-wider">Productos Almendra</h2>
+          <div className="h-[1px] w-12 bg-cuero/30 mx-auto mt-6" />
+        </div>
+
+        {/* Tab Filters */}
+        <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-12">
+          {tabs.map(tab => (
+            <button
+              key={tab}
+              onClick={() => setCatalogFilter(tab)}
+              className={`px-5 py-2.5 text-[10px] font-bold tracking-widest uppercase transition-all duration-300 rounded-[2px] border ${
+                catalogFilter === tab
+                  ? "bg-cuero text-white border-cuero"
+                  : "bg-transparent text-chocolate/70 border-chocolate/10 hover:border-chocolate/30 hover:text-chocolate"
+              }`}
+            >
+              {tab === "Bolso Mano Hombre" ? "Bolsos de Mano" : tab}
+            </button>
+          ))}
+        </div>
+
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredProducts.map(product => {
+            const firstVarName = Object.keys(product.variations)[0];
+            const coverImage = product.variations[firstVarName][0];
+            const totalVars = Object.keys(product.variations).length;
+
+            return (
+              <article
+                key={product.id}
+                onClick={() => setSelectedProduct(product)}
+                className="group cursor-pointer bg-white border border-arena/20 rounded-[4px] overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+              >
+                {/* Image wrapper */}
+                <div className="relative aspect-[4/5] bg-arena/5 overflow-hidden">
+                  <img
+                    src={coverImage}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                  {totalVars > 1 && (
+                    <div className="absolute top-4 left-4 bg-chocolate/85 text-crema text-[9px] font-bold tracking-widest uppercase py-1 px-2.5 rounded-[2px]">
+                      {totalVars} colores
+                    </div>
+                  )}
+                </div>
+
+                {/* Details */}
+                <div className="p-6 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span className="text-[9px] font-bold tracking-widest uppercase text-tierra/60">{product.category}</span>
+                    <h3 className="font-serif text-xl text-chocolate mt-2 font-medium group-hover:text-cuero transition-colors">
+                      {product.name}
+                    </h3>
+                    <p className="mt-2.5 text-xs text-chocolate/60 leading-relaxed font-light line-clamp-2">
+                      {product.description}
+                    </p>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-arena/10 flex items-center justify-between">
+                    <span className="font-serif text-lg font-semibold text-cuero">
+                      {formatPrice(product.price)}
+                    </span>
+                    <span className="text-[10px] font-bold tracking-widest uppercase text-chocolate border-b border-chocolate/30 pb-0.5 group-hover:border-cuero group-hover:text-cuero transition-all">
+                      Ver Detalles
+                    </span>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProductDetailModal() {
+  const { selectedProduct, setSelectedProduct, addItem, formatPrice } = useCart();
+  const [selectedVar, setSelectedVar] = useState("");
+  const [activePhotoIdx, setActivePhotoIdx] = useState(0);
+
+  useEffect(() => {
+    if (selectedProduct) {
+      const vars = Object.keys(selectedProduct.variations);
+      setSelectedVar(vars[0]);
+      setActivePhotoIdx(0);
+    }
+  }, [selectedProduct]);
+
+  if (!selectedProduct) return null;
+
+  const variations = Object.keys(selectedProduct.variations);
+  const currentPhotos = selectedProduct.variations[selectedVar] || [];
+  const currentCover = currentPhotos[activePhotoIdx] || currentPhotos[0];
+
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        {/* Backdrop */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setSelectedProduct(null)}
+          className="fixed inset-0 bg-chocolate/60 backdrop-blur-xs"
+        />
+
+        {/* Modal Content */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 15 }}
+          transition={{ type: "spring", damping: 25, stiffness: 250 }}
+          className="relative z-10 w-full max-w-4xl bg-crema shadow-2xl rounded-[4px] overflow-hidden grid lg:grid-cols-[1.1fr_0.9fr] max-h-[90vh] lg:max-h-none overflow-y-auto"
+        >
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={() => setSelectedProduct(null)}
+            className="absolute top-4 right-4 z-20 h-10 w-10 flex items-center justify-center rounded-full bg-white/80 border border-chocolate/10 text-chocolate hover:bg-white transition-colors"
+            aria-label="Cerrar vista rápida"
+          >
+            <X size={18} />
+          </button>
+
+          {/* Left Side: Photo Gallery */}
+          <div className="p-6 lg:p-10 flex flex-col justify-center bg-arena/5">
+            <div className="aspect-[4/5] overflow-hidden rounded-[2px] bg-white border border-arena/20 shadow-xs relative">
+              <img
+                src={currentCover}
+                alt={`${selectedProduct.name} - ${selectedVar}`}
+                className="h-full w-full object-cover transition-all duration-300"
+              />
+              {currentPhotos.length > 1 && (
+                <div className="absolute bottom-4 right-4 bg-chocolate/85 text-crema text-[10px] font-bold py-1 px-3 rounded-[2px]">
+                  {activePhotoIdx + 1} / {currentPhotos.length}
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnail selector */}
+            {currentPhotos.length > 1 && (
+              <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-thin">
+                {currentPhotos.map((photo, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActivePhotoIdx(idx)}
+                    className={`h-16 w-14 flex-shrink-0 rounded-[2px] overflow-hidden border transition-all ${
+                      idx === activePhotoIdx
+                        ? "border-cuero ring-2 ring-cuero/20"
+                        : "border-arena/30 hover:border-arena"
+                    }`}
+                  >
+                    <img src={photo} alt="" className="h-full w-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right Side: Details */}
+          <div className="p-6 lg:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-arena/20">
+            <div>
+              <span className="text-[10px] tracking-[0.2em] font-semibold text-tierra uppercase">
+                {selectedProduct.category}
+              </span>
+              <h2 className="font-serif text-3xl md:text-4xl text-chocolate mt-3 font-medium leading-tight">
+                {selectedProduct.name}
+              </h2>
+              <p className="mt-4 text-xs leading-relaxed text-chocolate/70 font-light">
+                {selectedProduct.description}
+              </p>
+
+              <div className="h-[1px] w-full bg-arena/20 my-6" />
+
+              {/* Variations selector */}
+              {variations.length > 0 && variations[0] !== "Único" && (
+                <div className="space-y-3">
+                  <span className="block text-xs font-bold tracking-widest text-chocolate uppercase">
+                    Color / Variación: <span className="text-cuero font-semibold">{selectedVar}</span>
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {variations.map((v) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => {
+                          setSelectedVar(v);
+                          setActivePhotoIdx(0);
+                        }}
+                        className={`px-4 py-2 text-[10px] font-bold tracking-widest uppercase transition-all rounded-[2px] border ${
+                          selectedVar === v
+                            ? "bg-cuero text-white border-cuero"
+                            : "bg-white text-chocolate/80 border-arena/40 hover:border-arena"
+                        }`}
+                      >
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Price & Cart Actions */}
+            <div className="mt-8 pt-6 border-t border-arena/20">
+              <div className="flex items-baseline justify-between mb-4">
+                <span className="text-xs font-bold tracking-widest text-chocolate/50 uppercase">Precio</span>
+                <span className="font-serif text-3xl font-semibold text-cuero">
+                  {formatPrice(selectedProduct.price)}
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  addItem(selectedProduct, selectedVar);
+                  setSelectedProduct(null);
+                }}
+                className="w-full flex items-center justify-center gap-2.5 bg-cuero text-white py-4 text-xs font-bold tracking-widest uppercase hover:bg-chocolate transition-colors"
+              >
+                Sumar al pedido <ShoppingBag size={16} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </AnimatePresence>
+  );
+}
+
 function Footer() {
   return (
     <footer className="bg-crema border-t border-arena/30 px-6 md:px-12 py-16 text-chocolate">
@@ -1114,6 +1384,7 @@ function AppShell() {
         <AboutSection />
         <EverydayBagPromo />
         <CategoryExplore />
+        <CatalogSection />
         <ProcessSection />
         <InstagramSection />
         <ContactForm />
@@ -1121,6 +1392,7 @@ function AppShell() {
       <NewsletterBanner />
       <Footer />
       <CartDrawer />
+      <ProductDetailModal />
     </div>
   );
 }
