@@ -37,6 +37,8 @@ import procesoCostura from "../proceso_costura.jpg";
 import procesoLogo from "../proceso_logo.jpg";
 import fallbackBilleteraMujer from "../billetera_mujer.jpg";
 import fringeBag from "../fringe_bag.jpg";
+import carteraCrescent from "../cartera_crescent.jpg";
+import mochilaOlivia from "../mochila_olivia.jpg";
 import { catalogProducts } from "./assets/catalogoData";
 
 const WHATSAPP_URL =
