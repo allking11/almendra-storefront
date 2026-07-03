@@ -31,6 +31,11 @@ import exteriorMate from "../fotos exteriores.jpeg";
 import exteriorCow from "../fotos exteriores2.jpeg";
 import exteriorLine from "../fotos exteriores3.jpeg";
 
+// Generated banners for slideshow
+import bannerMateraBlack from "../banner_matera_black.jpg";
+import bannerCarteraCow from "../banner_cartera_cow.jpg";
+import bannerMateraWood from "../banner_matera_wood.jpg";
+
 // Generated assets
 import procesoCorte from "../proceso_corte.jpg";
 import procesoCostura from "../proceso_costura.jpg";
@@ -263,19 +268,53 @@ function Header() {
 }
 
 function Hero() {
+  const slides = useMemo(() => [
+    {
+      image: bannerCarteraCow,
+      title: "Cartera Cow",
+      subtitle: "Diseño único y cuero seleccionado."
+    },
+    {
+      image: bannerMateraBlack,
+      title: "Matera Cartera",
+      subtitle: "La combinación perfecta de estilo y tradición."
+    },
+    {
+      image: bannerMateraWood,
+      title: "Matera de Auto",
+      subtitle: "Detalles artesanales en madera y cuero noble."
+    }
+  ], []);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
   return (
     <section
       id="inicio"
       className="relative min-h-screen flex items-center justify-start overflow-hidden bg-chocolate"
     >
-      {/* Background Image */}
+      {/* Slideshow background */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={modelExterior}
-          alt="Almendra model background"
-          className="h-full w-full object-cover object-[center_28%] brightness-[0.75]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-chocolate/65 via-chocolate/30 to-transparent" />
+        <AnimatePresence mode="wait">
+          <motion.img
+            key={currentIndex}
+            src={slides[currentIndex].image}
+            alt={slides[currentIndex].title}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 0.65, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="h-full w-full object-cover brightness-[0.8]"
+          />
+        </AnimatePresence>
+        <div className="absolute inset-0 bg-gradient-to-r from-chocolate/80 via-chocolate/40 to-transparent" />
       </div>
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-12 pt-20">
@@ -287,13 +326,27 @@ function Hero() {
             Diseñadas para acompañarte en la rutina, <br /> hechas en cuero
             genuino y producidas <br /> artesanalmente en Uruguay.
           </p>
-          <div className="mt-10">
+          <div className="mt-10 flex flex-wrap items-center gap-6">
             <a
               href="#coleccion"
               className="inline-block bg-cuero text-white px-8 py-4 text-xs font-semibold tracking-widest uppercase hover:bg-tierra transition-all duration-300 shadow-lg active:scale-95"
             >
               Explorar Colección
             </a>
+            
+            {/* Active slide indicator */}
+            <div className="flex gap-2">
+              {slides.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentIndex(idx)}
+                  className={`h-1.5 rounded-full transition-all duration-500 ${
+                    idx === currentIndex ? "bg-white w-6" : "bg-white/40 w-1.5"
+                  }`}
+                  aria-label={`Ir al slide ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </Reveal>
       </div>
