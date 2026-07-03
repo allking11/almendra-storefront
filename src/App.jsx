@@ -1114,7 +1114,7 @@ function ProductDetailModal() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ type: "spring", damping: 25, stiffness: 250 }}
-          className="relative z-10 w-full max-w-4xl bg-crema shadow-2xl rounded-[4px] overflow-hidden grid lg:grid-cols-[1.1fr_0.9fr] max-h-[90vh] lg:max-h-none overflow-y-auto"
+          className="relative z-10 w-full max-w-4xl bg-crema shadow-2xl rounded-[4px] overflow-hidden grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] max-h-[90vh] lg:max-h-[85vh] lg:h-[80vh] overflow-y-auto lg:overflow-hidden"
         >
           {/* Close button */}
           <button
@@ -1127,7 +1127,7 @@ function ProductDetailModal() {
           </button>
 
           {/* Left Side: Photo Gallery */}
-          <div className="p-6 lg:p-10 flex flex-col justify-center bg-arena/5">
+          <div className="p-6 lg:p-10 flex flex-col justify-start bg-arena/5 lg:overflow-y-auto lg:max-h-full">
             <div className="aspect-[4/5] overflow-hidden rounded-[2px] bg-white border border-arena/20 shadow-xs relative">
               <img
                 src={currentCover}
@@ -1163,7 +1163,7 @@ function ProductDetailModal() {
           </div>
 
           {/* Right Side: Details */}
-          <div className="p-6 lg:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-arena/20">
+          <div className="p-6 lg:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-arena/20 lg:overflow-y-auto lg:max-h-full">
             <div>
               <span className="text-[10px] tracking-[0.2em] font-semibold text-tierra uppercase">
                 {selectedProduct.category}
