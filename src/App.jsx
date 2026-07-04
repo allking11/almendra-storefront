@@ -138,6 +138,23 @@ function CartProvider({ children }) {
     window.location.href = `https://wa.me/59896909600?text=${message}`;
   };
 
+  const [page, setPage] = useState("inicio");
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const h = window.location.hash;
+      if (h === "#/tienda" || h === "#tienda") {
+        setPage("tienda");
+        window.scrollTo({ top: 0 });
+      } else {
+        setPage("inicio");
+      }
+    };
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
   const value = useMemo(
     () => ({
       items,
@@ -155,8 +172,10 @@ function CartProvider({ children }) {
       setSelectedProduct,
       catalogFilter,
       setCatalogFilter,
+      page,
+      setPage,
     }),
-    [items, open, quantity, favorites, selectedProduct, catalogFilter]
+    [items, open, quantity, favorites, selectedProduct, catalogFilter, page]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -233,13 +252,8 @@ function Header() {
           <a className="hover:text-cuero transition-colors" href="#contacto">
             Contacto
           </a>
-          <a
-            className="hover:text-cuero transition-colors"
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Instagram
+          <a className="hover:text-cuero transition-colors" href="#/tienda">
+            Tienda
           </a>
         </nav>
 
@@ -408,7 +422,7 @@ function FeaturedCollection() {
             </div>
             <div className="mt-10 lg:mt-20">
               <a
-                href="#catalogo"
+                href="#/tienda"
                 className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-chocolate hover:text-cuero transition-colors uppercase border-b border-chocolate pb-1"
               >
                 Ver catálogo completo <ArrowRight size={14} />
@@ -678,10 +692,7 @@ function CategoryExplore() {
 
   const handleCategoryClick = (categoryName) => {
     setCatalogFilter(categoryName);
-    const element = document.getElementById("catalogo");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    window.location.hash = "#/tienda";
   };
 
   return (
@@ -1283,13 +1294,8 @@ function Footer() {
           <a className="hover:text-cuero transition-colors" href="#contacto">
             Contacto
           </a>
-          <a
-            className="hover:text-cuero transition-colors"
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Instagram
+          <a className="hover:text-cuero transition-colors" href="#/tienda">
+            Tienda
           </a>
         </div>
 
@@ -1453,20 +1459,28 @@ function CartDrawer() {
 }
 
 function AppShell() {
+  const { page } = useCart();
   return (
     <div className="min-h-screen overflow-x-hidden bg-crema text-chocolate">
       <Header />
       <main>
-        <Hero />
-        <FeaturedCollection />
-        <FeaturesRow />
-        <AboutSection />
-        <EverydayBagPromo />
-        <CategoryExplore />
-        <CatalogSection />
-        <ProcessSection />
-        <InstagramSection />
-        <ContactForm />
+        {page === "inicio" ? (
+          <>
+            <Hero />
+            <FeaturedCollection />
+            <FeaturesRow />
+            <AboutSection />
+            <EverydayBagPromo />
+            <CategoryExplore />
+            <ProcessSection />
+            <InstagramSection />
+            <ContactForm />
+          </>
+        ) : (
+          <div className="pt-24 min-h-[70vh] bg-crema">
+            <CatalogSection />
+          </div>
+        )}
       </main>
       <NewsletterBanner />
       <Footer />
