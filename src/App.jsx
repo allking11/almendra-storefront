@@ -16,6 +16,9 @@ import {
   WhatsappLogo,
   Check,
   Storefront,
+  Play,
+  SpeakerHigh,
+  SpeakerSlash,
 } from "@phosphor-icons/react";
 
 import logoSeed from "../logo (1).PNG";
@@ -31,6 +34,11 @@ import modelExterior from "../foto con modelo exterior.jpeg";
 import exteriorMate from "../fotos exteriores.jpeg";
 import exteriorCow from "../fotos exteriores2.jpeg";
 import exteriorLine from "../fotos exteriores3.jpeg";
+
+import videoTaller from "../taller.mp4";
+import videoCarteraNegra from "../cartera_negra.mp4";
+import videoMaterasCarrasco from "../materas_carrasco.mp4";
+import videoRamblaLogo from "../rambla_logo.mp4";
 
 // Generated banners for slideshow
 import bannerMateraBlack from "../banner_matera_black.jpg";
@@ -192,6 +200,86 @@ function Reveal({ children, delay = 0, className = "" }) {
     >
       {children}
     </motion.div>
+  );
+}
+
+export function OptimizedVideoPlayer({ src, poster, className = "" }) {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().then(() => setIsPlaying(true)).catch(() => {});
+        } else {
+          video.pause();
+          setIsPlaying(false);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  const handleVideoClick = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isPlaying) {
+      video.pause();
+      setIsPlaying(false);
+    } else {
+      video.play().then(() => setIsPlaying(true)).catch(() => {});
+    }
+  };
+
+  const handleMuteClick = (e) => {
+    e.stopPropagation();
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+  };
+
+  return (
+    <div className={`relative overflow-hidden bg-chocolate/5 group cursor-pointer ${className}`} onClick={handleVideoClick}>
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster}
+        loop
+        muted
+        playsInline
+        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+      />
+      
+      <div className="absolute inset-0 bg-gradient-to-t from-chocolate/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 pointer-events-none">
+        <div className="flex justify-end w-full">
+          <button
+            type="button"
+            onClick={handleMuteClick}
+            className="pointer-events-auto bg-chocolate/60 hover:bg-cuero text-white p-2 rounded-full backdrop-blur-xs transition-colors"
+            aria-label={isMuted ? "Activar sonido" : "Desactivar sonido"}
+          >
+            {isMuted ? <SpeakerSlash size={14} /> : <SpeakerHigh size={14} />}
+          </button>
+        </div>
+
+        <div>
+          {!isPlaying && (
+            <span className="bg-cuero/95 text-white text-[9px] tracking-widest uppercase font-bold py-1.5 px-3 rounded-full inline-flex items-center gap-1.5 backdrop-blur-xs">
+              <Play size={10} weight="fill" /> Click para ver
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -771,9 +859,12 @@ function ProcessSection() {
               />
             </div>
             <div className="aspect-[3/4] overflow-hidden rounded-[4px] shadow-sm">
-              <img
-                src={procesoCostura}
-                alt="Sewing leather process"
+              <video
+                src={videoTaller}
+                loop
+                muted
+                playsInline
+                autoPlay
                 className="w-full h-full object-cover"
               />
             </div>
@@ -792,11 +883,11 @@ function ProcessSection() {
 }
 
 function InstagramSection() {
-  const feedImages = [
-    exteriorLine,
-    carteraCrescent,
-    mochilaOlivia,
-    modelExterior,
+  const feedItems = [
+    { type: "image", src: exteriorLine },
+    { type: "video", src: videoMaterasCarrasco, poster: carteraCrescent },
+    { type: "video", src: videoRamblaLogo, poster: mochilaOlivia },
+    { type: "image", src: modelExterior },
   ];
 
   return (
@@ -828,19 +919,29 @@ function InstagramSection() {
         {/* Feed Images */}
         <Reveal delay={0.12}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {feedImages.map((img, idx) => (
+            {feedItems.map((item, idx) => (
               <div
                 key={idx}
-                className="aspect-[3/4] overflow-hidden rounded-[4px] shadow-sm group relative"
+                className="aspect-[3/4] overflow-hidden rounded-[4px] shadow-sm relative"
               >
-                <img
-                  src={img}
-                  alt="Almendra instagram post"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-chocolate/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <InstagramLogo size={24} className="text-white" />
-                </div>
+                {item.type === "video" ? (
+                  <OptimizedVideoPlayer
+                    src={item.src}
+                    poster={item.poster}
+                    className="w-full h-full"
+                  />
+                ) : (
+                  <div className="w-full h-full group relative cursor-pointer">
+                    <img
+                      src={item.src}
+                      alt="Almendra instagram post"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-chocolate/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <InstagramLogo size={24} className="text-white" />
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -1094,7 +1195,10 @@ function ProductDetailModal() {
   if (!selectedProduct) return null;
 
   const variations = Object.keys(selectedProduct.variations);
-  const currentPhotos = selectedProduct.variations[selectedVar] || [];
+  const basePhotos = selectedProduct.variations[selectedVar] || [];
+  const currentPhotos = selectedProduct.id === "prod-carteras-negra"
+    ? [...basePhotos, "video"]
+    : basePhotos;
   const currentCover = currentPhotos[activePhotoIdx] || currentPhotos[0];
 
   const getVariationColorStyle = (v) => {
@@ -1154,13 +1258,20 @@ function ProductDetailModal() {
           {/* Left Side: Photo Gallery */}
           <div className="p-6 lg:p-10 flex flex-col justify-start bg-arena/5 lg:overflow-y-auto lg:max-h-full">
             <div className="aspect-[4/5] overflow-hidden rounded-[2px] bg-white border border-arena/20 shadow-xs relative">
-              <img
-                src={currentCover}
-                alt={`${selectedProduct.name} - ${selectedVar}`}
-                className="h-full w-full object-cover transition-all duration-300"
-              />
+              {currentPhotos[activePhotoIdx] === "video" ? (
+                <OptimizedVideoPlayer
+                  src={videoCarteraNegra}
+                  className="w-full h-full"
+                />
+              ) : (
+                <img
+                  src={currentCover}
+                  alt={`${selectedProduct.name} - ${selectedVar}`}
+                  className="h-full w-full object-cover transition-all duration-300"
+                />
+              )}
               {currentPhotos.length > 1 && (
-                <div className="absolute bottom-4 right-4 bg-chocolate/85 text-crema text-[10px] font-bold py-1 px-3 rounded-[2px]">
+                <div className="absolute bottom-4 right-4 bg-chocolate/85 text-crema text-[10px] font-bold py-1 px-3 rounded-[2px] z-10">
                   {activePhotoIdx + 1} / {currentPhotos.length}
                 </div>
               )}
@@ -1180,7 +1291,14 @@ function ProductDetailModal() {
                         : "border-arena/30 hover:border-arena"
                     }`}
                   >
-                    <img src={photo} alt="" className="h-full w-full object-cover" />
+                    {photo === "video" ? (
+                      <div className="w-full h-full bg-chocolate text-crema flex flex-col items-center justify-center gap-1">
+                        <Play size={16} weight="fill" />
+                        <span className="text-[8px] font-bold tracking-widest uppercase">Video</span>
+                      </div>
+                    ) : (
+                      <img src={photo} alt="" className="h-full w-full object-cover" />
+                    )}
                   </button>
                 ))}
               </div>
