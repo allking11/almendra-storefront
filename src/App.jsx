@@ -42,7 +42,7 @@ import procesoCorte from "../proceso_corte.jpg";
 import procesoCostura from "../proceso_costura.jpg";
 import procesoLogo from "../proceso_logo.jpg";
 import fallbackBilleteraMujer from "../billetera_mujer.jpg";
-import camelCartera from "./assets/catalogo/prod_cartera_cuero_camel_0.jpg";
+import camelCartera from "./assets/catalogo/carteras/camel/img_0.png";
 import carteraCrescent from "../cartera_crescent.jpg";
 import mochilaOlivia from "../mochila_olivia.jpg";
 import { catalogProducts } from "./assets/catalogoData";
@@ -1094,6 +1094,30 @@ function ProductDetailModal() {
   const currentPhotos = selectedProduct.variations[selectedVar] || [];
   const currentCover = currentPhotos[activePhotoIdx] || currentPhotos[0];
 
+  const getVariationColorStyle = (v) => {
+    const val = v.toLowerCase();
+    if (val.includes("azul")) return { backgroundColor: "#3A5A80" };
+    if (val.includes("camel")) return { backgroundColor: "#C19A6B" };
+    if (val.includes("chocolate")) return { backgroundColor: "#5C3F33" };
+    if (val.includes("marron")) return { backgroundColor: "#8B5A2B" };
+    if (val.includes("negra") || val.includes("negro")) return { backgroundColor: "#1A1A1A" };
+    if (val.includes("roja") || val.includes("rojo")) return { backgroundColor: "#B91C1C" };
+    if (val.includes("verde")) return { backgroundColor: "#2E5A44" };
+    if (val.includes("dorada") || val.includes("dorado")) return { backgroundColor: "#D4AF37" };
+    if (val.includes("terracota")) return { backgroundColor: "#C85A32" };
+    if (val.includes("blanco")) return { backgroundColor: "#F5F5F7" };
+    
+    // For Color 1 and Color 2 in combinadas
+    if (val.includes("color 1")) {
+      return { background: "linear-gradient(135deg, #8B5A2B 50%, #1A1A1A 50%)" };
+    }
+    if (val.includes("color 2")) {
+      return { background: "linear-gradient(135deg, #C19A6B 50%, #5C3F33 50%)" };
+    }
+
+    return { backgroundColor: "#EADECF" };
+  };
+
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -1181,24 +1205,34 @@ function ProductDetailModal() {
                   <span className="block text-xs font-bold tracking-widest text-chocolate uppercase">
                     Color / Variación: <span className="text-cuero font-semibold">{selectedVar}</span>
                   </span>
-                  <div className="flex flex-wrap gap-2">
-                    {variations.map((v) => (
-                      <button
-                        key={v}
-                        type="button"
-                        onClick={() => {
-                          setSelectedVar(v);
-                          setActivePhotoIdx(0);
-                        }}
-                        className={`px-4 py-2 text-[10px] font-bold tracking-widest uppercase transition-all rounded-[2px] border ${
-                          selectedVar === v
-                            ? "bg-cuero text-white border-cuero"
-                            : "bg-white text-chocolate/80 border-arena/40 hover:border-arena"
-                        }`}
-                      >
-                        {v}
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-3">
+                    {variations.map((v) => {
+                      const colorStyle = getVariationColorStyle(v);
+                      const isSelected = selectedVar === v;
+                      return (
+                        <button
+                          key={v}
+                          type="button"
+                          onClick={() => {
+                            setSelectedVar(v);
+                            setActivePhotoIdx(0);
+                          }}
+                          className={`h-8 w-8 rounded-full border transition-all duration-300 relative flex items-center justify-center ${
+                            isSelected
+                              ? "border-cuero ring-2 ring-cuero/30 scale-110"
+                              : "border-arena/40 hover:scale-105"
+                          }`}
+                          style={colorStyle}
+                          title={v}
+                        >
+                          {isSelected && (
+                            <span className="absolute inset-0 flex items-center justify-center text-white drop-shadow-md">
+                              <Check size={12} weight="bold" className={v.toLowerCase().includes("blanco") ? "text-chocolate" : "text-white"} />
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
