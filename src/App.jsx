@@ -41,7 +41,7 @@ import procesoCorte from "../proceso_corte.jpg";
 import procesoCostura from "../proceso_costura.jpg";
 import procesoLogo from "../proceso_logo.jpg";
 import fallbackBilleteraMujer from "../billetera_mujer.jpg";
-import fringeBag from "../fringe_bag.jpg";
+import camelCartera from "./assets/catalogo/prod_cartera_cuero_camel_0.jpg";
 import carteraCrescent from "../cartera_crescent.jpg";
 import mochilaOlivia from "../mochila_olivia.jpg";
 import { catalogProducts } from "./assets/catalogoData";
@@ -610,7 +610,7 @@ function EverydayBagPromo() {
     id: "everyday-bag",
     name: "The Everyday Bag",
     price: 239000,
-    image: fringeBag,
+    image: camelCartera,
     description: "Cuero genuino. Interior reforzado. Hecho artesanalmente en Uruguay.",
   };
 
@@ -643,8 +643,8 @@ function EverydayBagPromo() {
         <Reveal delay={0.12}>
           <div className="rounded-[4px] overflow-hidden shadow-lg aspect-[16/10] max-h-[460px]">
             <img
-              src={fringeBag}
-              alt="Person wearing black fringe bag"
+              src={camelCartera}
+              alt="Person wearing camel leather bag"
               className="w-full h-full object-cover"
             />
           </div>
