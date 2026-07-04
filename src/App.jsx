@@ -15,6 +15,7 @@ import {
   InstagramLogo,
   WhatsappLogo,
   Check,
+  Storefront,
 } from "@phosphor-icons/react";
 
 import logoSeed from "../logo (1).PNG";
@@ -846,81 +847,78 @@ function InstagramSection() {
 }
 
 function ContactForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name || !email) return;
-    setSubmitted(true);
-    setTimeout(() => {
-      setName("");
-      setEmail("");
-      setMessage("");
-      setSubmitted(false);
-    }, 3000);
-  };
-
   return (
     <section id="contacto" className="bg-[#FAF7F2] py-24 px-6 md:px-12 border-t border-chocolate/5">
-      <div className="mx-auto max-w-md">
-        <Reveal className="text-center">
-          <h2 className="font-serif text-[clamp(2rem,3.5vw,2.75rem)] text-chocolate font-medium uppercase tracking-wider">
-            Consultas
-          </h2>
-          <p className="mt-4 text-sm text-chocolate/60 font-light">
-            Escribinos para presupuestos a medida, consultas sobre stock o detalles de envío.
+      <div className="mx-auto max-w-7xl">
+        <Reveal className="text-center mb-16">
+          <p className="text-[10px] tracking-[0.25em] font-semibold text-tierra uppercase">
+            Contacto y Envíos
           </p>
-
-          <form onSubmit={handleSubmit} className="mt-10 space-y-6 text-left">
-            <div>
-              <label htmlFor="name" className="block text-xs font-bold tracking-widest text-chocolate uppercase mb-2">
-                Nombre
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full bg-[#EADECF]/10 border border-chocolate/20 rounded-[4px] px-4 py-3 text-sm text-chocolate outline-none focus:border-cuero transition-colors"
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="block text-xs font-bold tracking-widest text-chocolate uppercase mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full bg-[#EADECF]/10 border border-chocolate/20 rounded-[4px] px-4 py-3 text-sm text-chocolate outline-none focus:border-cuero transition-colors"
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="block text-xs font-bold tracking-widest text-chocolate uppercase mb-2">
-                Mensaje
-              </label>
-              <textarea
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={4}
-                className="w-full bg-[#EADECF]/10 border border-chocolate/20 rounded-[4px] px-4 py-3 text-sm text-chocolate outline-none focus:border-cuero transition-colors resize-none"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-cuero text-white py-4 text-xs font-semibold tracking-widest uppercase hover:bg-tierra transition-colors active:scale-95 duration-200"
-            >
-              {submitted ? "Enviado con éxito" : "Enviar consulta"}
-            </button>
-          </form>
+          <h2 className="mt-4 font-serif text-[clamp(2.25rem,4vw,3.25rem)] text-chocolate font-medium uppercase tracking-wider">
+            ¿Cómo trabajamos?
+          </h2>
+          <div className="mt-4 h-0.5 w-16 bg-cuero mx-auto rounded"></div>
         </Reveal>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+          {/* Card 1: WhatsApp */}
+          <Reveal delay={0.05} className="flex">
+            <div className="w-full bg-[#FAF7F2] border border-chocolate/10 rounded-[6px] p-8 md:p-10 flex flex-col justify-between items-center text-center hover:border-cuero/30 hover:shadow-md transition-all duration-300 group">
+              <div className="flex flex-col items-center">
+                <div className="h-16 w-16 bg-[#EADECF]/20 rounded-full flex items-center justify-center text-cuero mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <WhatsappLogo size={32} />
+                </div>
+                <h3 className="font-serif text-xl font-medium text-chocolate uppercase tracking-wide mb-4">
+                  WhatsApp
+                </h3>
+                <p className="text-sm text-chocolate/70 leading-relaxed font-light">
+                  Escribinos ante cualquier duda, consulta de stock o para coordinar presupuestos a medida. Estamos para ayudarte de forma directa y personalizada.
+                </p>
+              </div>
+              <div className="mt-8 w-full">
+                <a
+                  href="https://wa.me/59896909600"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-full bg-cuero text-white py-4 px-6 text-xs font-semibold tracking-widest uppercase hover:bg-[#200E08] transition-colors duration-200 rounded-[4px]"
+                >
+                  <WhatsappLogo size={16} />
+                  Chatear ahora
+                </a>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Card 2: Envíos */}
+          <Reveal delay={0.1} className="flex">
+            <div className="w-full bg-[#FAF7F2] border border-chocolate/10 rounded-[6px] p-8 md:p-10 flex flex-col items-center text-center hover:border-cuero/30 hover:shadow-md transition-all duration-300 group">
+              <div className="h-16 w-16 bg-[#EADECF]/20 rounded-full flex items-center justify-center text-cuero mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Truck size={32} />
+              </div>
+              <h3 className="font-serif text-xl font-medium text-chocolate uppercase tracking-wide mb-4">
+                Envíos
+              </h3>
+              <p className="text-sm text-chocolate/70 leading-relaxed font-light">
+                Hacemos envíos a todo el Uruguay. Despachamos tu compra de forma rápida y segura a través de Agencia Central DAC, directo a tu puerta o agencia más cercana.
+              </p>
+            </div>
+          </Reveal>
+
+          {/* Card 3: Pickup & Tienda */}
+          <Reveal delay={0.15} className="flex">
+            <div className="w-full bg-[#FAF7F2] border border-chocolate/10 rounded-[6px] p-8 md:p-10 flex flex-col items-center text-center hover:border-cuero/30 hover:shadow-md transition-all duration-300 group">
+              <div className="h-16 w-16 bg-[#EADECF]/20 rounded-full flex items-center justify-center text-cuero mb-6 group-hover:scale-110 transition-transform duration-300">
+                <Storefront size={32} />
+              </div>
+              <h3 className="font-serif text-xl font-medium text-chocolate uppercase tracking-wide mb-4">
+                Tienda Online & Pickup
+              </h3>
+              <p className="text-sm text-chocolate/70 leading-relaxed font-light">
+                Somos una tienda exclusivamente online y no contamos con local físico. Podés retirar tus compras coordinando previamente para retirar tu pedido en nuestro pickup.
+              </p>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
