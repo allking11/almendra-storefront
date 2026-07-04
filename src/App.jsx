@@ -65,11 +65,34 @@ function useCart() {
 const CartContext = createContext(null);
 
 function CartProvider({ children }) {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem("almendra_cart_items");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [open, setOpen] = useState(false);
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState(() => {
+    try {
+      const saved = localStorage.getItem("almendra_favorites");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [catalogFilter, setCatalogFilter] = useState("Carteras");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("almendra_cart_items", JSON.stringify(items));
+  }, [items]);
+
+  useEffect(() => {
+    localStorage.setItem("almendra_favorites", JSON.stringify(favorites));
+  }, [favorites]);
 
   const quantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -191,8 +214,10 @@ function CartProvider({ children }) {
       setCatalogFilter,
       page,
       setPage,
+      searchQuery,
+      setSearchQuery,
     }),
-    [items, open, quantity, favorites, selectedProduct, catalogFilter, page]
+    [items, open, quantity, favorites, selectedProduct, catalogFilter, page, searchQuery]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -273,8 +298,9 @@ export function OptimizedVideoPlayer({ src, poster, className = "" }) {
 }
 
 function Header() {
-  const { quantity, setOpen } = useCart();
+  const { quantity, setOpen, page, searchQuery, setSearchQuery } = useCart();
   const [scrolled, setScrolled] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -287,7 +313,7 @@ function Header() {
   return (
     <header
       className={`fixed left-0 right-0 top-0 z-40 transition-all duration-500 px-6 md:px-12 py-4 ${
-        scrolled
+        scrolled || isSearchOpen
           ? "bg-crema/90 border-b border-arena/30 shadow-md backdrop-blur-md"
           : "bg-gradient-to-b from-chocolate/40 to-transparent"
       }`}
@@ -299,53 +325,93 @@ function Header() {
             src={logoSeed}
             alt="Almendra"
             className={`h-7 w-7 object-contain transition-all duration-300 ${
-              scrolled ? "" : "brightness-0 invert"
+              scrolled || isSearchOpen ? "" : "brightness-0 invert"
             }`}
           />
           <span
             className={`font-serif text-2xl tracking-widest font-semibold transition-colors duration-300 ${
-              scrolled ? "text-chocolate" : "text-white"
+              scrolled || isSearchOpen ? "text-chocolate" : "text-white"
             }`}
           >
             ALMENDRA
           </span>
         </a>
 
-        {/* Navigation Links */}
-        <nav
-          className={`hidden items-center gap-9 text-xs font-semibold tracking-widest transition-colors duration-300 uppercase md:flex ${
-            scrolled ? "text-chocolate/80" : "text-white/90"
-          }`}
-        >
-          <a className="hover:text-cuero transition-colors" href="#coleccion">
-            Colección
-          </a>
-          <a className="hover:text-cuero transition-colors" href="#nosotros">
-            Nosotros
-          </a>
-          <a className="hover:text-cuero transition-colors" href="#proceso">
-            Proceso
-          </a>
-          <a className="hover:text-cuero transition-colors" href="#contacto">
-            Contacto
-          </a>
-          <a className="hover:text-cuero transition-colors" href="#/tienda">
-            Tienda
-          </a>
-        </nav>
+        {/* Live Search Input or Navigation Links */}
+        {isSearchOpen ? (
+          <div className="flex-1 max-w-[130px] sm:max-w-xs md:max-w-md mx-4 md:mx-8 flex items-center bg-chocolate/5 px-4 py-1.5 rounded-full border border-arena/20">
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (page !== "tienda") {
+                  window.location.hash = "#/tienda";
+                }
+              }}
+              className={`bg-transparent border-none outline-none text-xs w-full placeholder-current outline-hidden uppercase tracking-wider ${
+                scrolled || isSearchOpen ? "text-chocolate placeholder-chocolate/50" : "text-white placeholder-white/50"
+              }`}
+              autoFocus
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setIsSearchOpen(false);
+                setSearchQuery("");
+              }}
+              className={`hover:opacity-70 transition-opacity ml-2 ${scrolled || isSearchOpen ? "text-chocolate" : "text-white"}`}
+              aria-label="Cerrar búsqueda"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ) : (
+          <nav
+            className={`hidden items-center gap-9 text-xs font-semibold tracking-widest transition-colors duration-300 uppercase md:flex ${
+              scrolled ? "text-chocolate/80" : "text-white/90"
+            }`}
+          >
+            <a className="hover:text-cuero transition-colors" href="#coleccion">
+              Colección
+            </a>
+            <a className="hover:text-cuero transition-colors" href="#nosotros">
+              Nosotros
+            </a>
+            <a className="hover:text-cuero transition-colors" href="#proceso">
+              Proceso
+            </a>
+            <a className="hover:text-cuero transition-colors" href="#contacto">
+              Contacto
+            </a>
+            <a className="hover:text-cuero transition-colors" href="#/tienda">
+              Tienda
+            </a>
+          </nav>
+        )}
 
         {/* Right side controls */}
         <div
           className={`flex items-center gap-6 text-xs font-semibold tracking-widest uppercase transition-colors duration-300 ${
-            scrolled ? "text-chocolate" : "text-white"
+            scrolled || isSearchOpen ? "text-chocolate" : "text-white"
           }`}
         >
-          <button
-            className="hover:text-cuero transition-colors"
-            aria-label="Buscar"
-          >
-            <MagnifyingGlass size={18} />
-          </button>
+          {!isSearchOpen && (
+            <button
+              type="button"
+              onClick={() => {
+                setIsSearchOpen(true);
+                if (page !== "tienda") {
+                  window.location.hash = "#/tienda";
+                }
+              }}
+              className="hover:text-cuero transition-colors"
+              aria-label="Buscar"
+            >
+              <MagnifyingGlass size={18} />
+            </button>
+          )}
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -1078,13 +1144,21 @@ function NewsletterBanner() {
 }
 
 function CatalogSection() {
-  const { formatPrice, setSelectedProduct, catalogFilter, setCatalogFilter } = useCart();
+  const { formatPrice, setSelectedProduct, catalogFilter, setCatalogFilter, searchQuery, setSearchQuery } = useCart();
   
   const tabs = useMemo(() => ["Carteras", "Materas", "Materas Auto", "Billeteras Hombre", "Billeteras Mujer", "Bolso Mano Hombre"], []);
   
   const filteredProducts = useMemo(() => {
-    return catalogProducts.filter(p => p.category === catalogFilter);
-  }, [catalogFilter]);
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) {
+      return catalogProducts.filter(p => p.category === catalogFilter);
+    }
+    return catalogProducts.filter(p => 
+      p.name.toLowerCase().includes(query) || 
+      p.description.toLowerCase().includes(query) ||
+      p.category.toLowerCase().includes(query)
+    );
+  }, [catalogFilter, searchQuery]);
 
   return (
     <section id="catalogo" className="px-6 md:px-12 py-24 bg-crema border-t border-arena/20">
@@ -1100,9 +1174,12 @@ function CatalogSection() {
           {tabs.map(tab => (
             <button
               key={tab}
-              onClick={() => setCatalogFilter(tab)}
+              onClick={() => {
+                setCatalogFilter(tab);
+                setSearchQuery("");
+              }}
               className={`px-5 py-2.5 text-[10px] font-bold tracking-widest uppercase transition-all duration-300 rounded-[2px] border ${
-                catalogFilter === tab
+                catalogFilter === tab && !searchQuery
                   ? "bg-cuero text-white border-cuero"
                   : "bg-transparent text-chocolate/70 border-chocolate/10 hover:border-chocolate/30 hover:text-chocolate"
               }`}
@@ -1112,56 +1189,78 @@ function CatalogSection() {
           ))}
         </div>
 
+        {searchQuery && (
+          <div className="text-center mb-10 -mt-6">
+            <p className="text-xs text-chocolate/60">
+              Mostrando resultados para <span className="font-bold text-chocolate">"{searchQuery}"</span>
+            </p>
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="text-[10px] font-bold tracking-widest uppercase text-cuero hover:text-chocolate transition-colors mt-2 border-b border-cuero pb-0.5 inline-block"
+            >
+              Ver todas las categorías
+            </button>
+          </div>
+        )}
+
         {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {filteredProducts.map(product => {
-            const firstVarName = Object.keys(product.variations)[0];
-            const coverImage = product.variations[firstVarName][0];
-            const totalVars = Object.keys(product.variations).length;
+          {filteredProducts.length === 0 ? (
+            <div className="col-span-full text-center py-16 text-chocolate/50">
+              <p className="font-serif text-xl">No encontramos productos para tu búsqueda</p>
+              <p className="text-xs mt-2">Intentá con palabras clave como "cuero", "matera", "cartera" o "billetera".</p>
+            </div>
+          ) : (
+            filteredProducts.map(product => {
+              const firstVarName = Object.keys(product.variations)[0];
+              const coverImage = product.variations[firstVarName][0];
+              const totalVars = Object.keys(product.variations).length;
 
-            return (
-              <article
-                key={product.id}
-                onClick={() => setSelectedProduct(product)}
-                className="group cursor-pointer bg-white border border-arena/20 rounded-[4px] overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
-              >
-                {/* Image wrapper */}
-                <div className="relative aspect-[4/5] bg-arena/5 overflow-hidden">
-                  <img
-                    src={coverImage}
-                    alt={product.name}
-                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                  {totalVars > 1 && (
-                    <div className="absolute top-3 left-3 bg-chocolate/85 text-crema text-[8px] font-bold tracking-widest uppercase py-0.5 px-2 rounded-[2px]">
-                      {totalVars} colores
+              return (
+                <article
+                  key={product.id}
+                  onClick={() => setSelectedProduct(product)}
+                  className="group cursor-pointer bg-white border border-arena/20 rounded-[4px] overflow-hidden shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+                >
+                  {/* Image wrapper */}
+                  <div className="relative aspect-[4/5] bg-arena/5 overflow-hidden">
+                    <img
+                      src={coverImage}
+                      alt={product.name}
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    {totalVars > 1 && (
+                      <div className="absolute top-3 left-3 bg-chocolate/85 text-crema text-[8px] font-bold tracking-widest uppercase py-0.5 px-2 rounded-[2px]">
+                        {totalVars} colores
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Details */}
+                  <div className="p-4 flex-1 flex flex-col justify-between">
+                    <div>
+                      <span className="text-[8px] font-bold tracking-widest uppercase text-tierra/60">{product.category}</span>
+                      <h3 className="font-serif text-base text-chocolate mt-1.5 font-medium group-hover:text-cuero transition-colors line-clamp-1">
+                        {product.name}
+                      </h3>
+                      <p className="mt-1.5 text-xs text-chocolate/60 leading-relaxed font-light line-clamp-2">
+                        {product.description}
+                      </p>
                     </div>
-                  )}
-                </div>
-
-                {/* Details */}
-                <div className="p-4 flex-1 flex flex-col justify-between">
-                  <div>
-                    <span className="text-[8px] font-bold tracking-widest uppercase text-tierra/60">{product.category}</span>
-                    <h3 className="font-serif text-base text-chocolate mt-1.5 font-medium group-hover:text-cuero transition-colors line-clamp-1">
-                      {product.name}
-                    </h3>
-                    <p className="mt-1.5 text-xs text-chocolate/60 leading-relaxed font-light line-clamp-2">
-                      {product.description}
-                    </p>
+                    <div className="mt-4 pt-3 border-t border-arena/10 flex items-center justify-between">
+                      <span className="font-serif text-base font-semibold text-cuero">
+                        {formatPrice(product.price)}
+                      </span>
+                      <span className="text-[9px] font-bold tracking-widest uppercase text-chocolate border-b border-chocolate/30 pb-0.5 group-hover:border-cuero group-hover:text-cuero transition-all">
+                        Detalles
+                      </span>
+                    </div>
                   </div>
-                  <div className="mt-4 pt-3 border-t border-arena/10 flex items-center justify-between">
-                    <span className="font-serif text-base font-semibold text-cuero">
-                      {formatPrice(product.price)}
-                    </span>
-                    <span className="text-[9px] font-bold tracking-widest uppercase text-chocolate border-b border-chocolate/30 pb-0.5 group-hover:border-cuero group-hover:text-cuero transition-all">
-                      Detalles
-                    </span>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+                </article>
+              );
+            })
+          )}
         </div>
       </div>
     </section>
