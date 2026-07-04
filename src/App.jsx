@@ -63,7 +63,7 @@ function CartProvider({ children }) {
   const [open, setOpen] = useState(false);
   const [favorites, setFavorites] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [catalogFilter, setCatalogFilter] = useState("Todos");
+  const [catalogFilter, setCatalogFilter] = useState("Carteras");
 
   const quantity = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -687,17 +687,10 @@ function CategoryExplore() {
   return (
     <section className="px-6 md:px-12 py-24 bg-[#EADECF]/20">
       <div className="mx-auto max-w-7xl">
-        <Reveal className="flex items-end justify-between border-b border-chocolate/10 pb-6 mb-12">
+        <Reveal className="border-b border-chocolate/10 pb-6 mb-12">
           <h2 className="font-serif text-[clamp(1.75rem,3.5vw,2.75rem)] font-medium text-chocolate uppercase tracking-wider">
             Explorá por categoría
           </h2>
-          <button
-            type="button"
-            onClick={() => handleCategoryClick("Todos")}
-            className="flex items-center gap-2 text-xs font-semibold tracking-widest text-chocolate hover:text-cuero transition-colors uppercase border-b border-chocolate pb-1"
-          >
-            Ver todos los productos <ArrowRight size={14} />
-          </button>
         </Reveal>
 
         <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
@@ -986,10 +979,9 @@ function NewsletterBanner() {
 function CatalogSection() {
   const { formatPrice, setSelectedProduct, catalogFilter, setCatalogFilter } = useCart();
   
-  const tabs = useMemo(() => ["Todos", "Carteras", "Materas", "Materas Auto", "Billeteras Hombre", "Billeteras Mujer", "Bolso Mano Hombre"], []);
+  const tabs = useMemo(() => ["Carteras", "Materas", "Materas Auto", "Billeteras Hombre", "Billeteras Mujer", "Bolso Mano Hombre"], []);
   
   const filteredProducts = useMemo(() => {
-    if (catalogFilter === "Todos") return catalogProducts;
     return catalogProducts.filter(p => p.category === catalogFilter);
   }, [catalogFilter]);
 
