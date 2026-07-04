@@ -21,7 +21,7 @@ import {
   SpeakerSlash,
 } from "@phosphor-icons/react";
 
-import logoSeed from "../logo (1).PNG";
+import logoSeed from "../logo_seed.png";
 import logoPrimary from "../logo (2).PNG";
 import logoFooter from "../logo (3).PNG";
 import cowPrint from "../cow print.jpeg";
@@ -308,9 +308,9 @@ function Header() {
         <a href="#inicio" className="flex items-center gap-2">
           <img
             src={logoSeed}
-            alt=""
+            alt="Almendra"
             className={`h-7 w-7 object-contain transition-all duration-300 ${
-              scrolled ? "invert" : "brightness-0 invert"
+              scrolled ? "" : "brightness-0 invert"
             }`}
           />
           <span
@@ -1392,7 +1392,7 @@ function Footer() {
       <div className="mx-auto max-w-7xl flex flex-col items-center justify-between gap-8 md:flex-row">
         {/* Left: Logo */}
         <a href="#inicio" className="flex items-center gap-2">
-          <img src={logoSeed} alt="" className="h-6 w-6 object-contain invert" />
+          <img src={logoSeed} alt="Almendra" className="h-6 w-6 object-contain" />
           <span className="font-serif text-lg tracking-widest font-semibold uppercase">
             ALMENDRA
           </span>
