@@ -134,7 +134,7 @@ export const catalogProducts = [
     category: "Billeteras Mujer",
     name: "Billetera de Cuero Mujer",
     description: "Billetera de cuero vacuno legítimo con cierre y divisiones para tarjetas y billetes.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Marrón": [fallbackBilleteraMujer],
     }
@@ -144,7 +144,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Azul",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_azul_0, img_billeteras_hombre_azul_1, img_billeteras_hombre_azul_2, img_billeteras_hombre_azul_3],
     }
@@ -154,7 +154,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Camel",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_camel_0, img_billeteras_hombre_camel_1, img_billeteras_hombre_camel_2],
     }
@@ -164,7 +164,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Chocolate",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_chocolate_0, img_billeteras_hombre_chocolate_1, img_billeteras_hombre_chocolate_2],
     }
@@ -174,7 +174,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Chocolate 2",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_chocolate_2_0, img_billeteras_hombre_chocolate_2_1, img_billeteras_hombre_chocolate_2_2],
     }
@@ -184,7 +184,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Chocolate 3",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_chocolate_3_0, img_billeteras_hombre_chocolate_3_1, img_billeteras_hombre_chocolate_3_2],
     }
@@ -194,7 +194,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Combinada 1",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Color 1": [img_billeteras_hombre_combinada_1_1_0],
       "Color 2": [img_billeteras_hombre_combinada_1_2_0, img_billeteras_hombre_combinada_1_2_1],
@@ -205,7 +205,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Combinada 2",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Color 1": [img_billeteras_hombre_combinada_2_1_0, img_billeteras_hombre_combinada_2_1_1, img_billeteras_hombre_combinada_2_1_2],
       "Color 2": [img_billeteras_hombre_combinada_2_2_0, img_billeteras_hombre_combinada_2_2_1, img_billeteras_hombre_combinada_2_2_2],
@@ -216,7 +216,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Marron 1",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_marron_1_0, img_billeteras_hombre_marron_1_1, img_billeteras_hombre_marron_1_2],
     }
@@ -226,7 +226,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Marron 2",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_marron_2_0, img_billeteras_hombre_marron_2_1, img_billeteras_hombre_marron_2_2],
     }
@@ -236,7 +236,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Negra",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_negra_0],
     }
@@ -246,7 +246,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Negra Opaca",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_negra_opaca_0, img_billeteras_hombre_negra_opaca_1, img_billeteras_hombre_negra_opaca_2],
     }
@@ -256,7 +256,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Billetera Hombre Negra Opaca 2",
     description: "Billetera clásica de hombre en cuero legítimo de alta calidad con múltiples compartimentos.",
-    price: 89000,
+    price: 1200,
     variations: {
       "Único": [img_billeteras_hombre_negra_opaca_2_0, img_billeteras_hombre_negra_opaca_2_1, img_billeteras_hombre_negra_opaca_2_2],
     }
@@ -266,7 +266,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Tarjetero Marron",
     description: "Tarjetero compacto de cuero legítimo para tarjetas y billetes doblados.",
-    price: 49000,
+    price: 800,
     variations: {
       "Único": [img_billeteras_hombre_tarjetero_marron_0, img_billeteras_hombre_tarjetero_marron_1],
     }
@@ -276,7 +276,7 @@ export const catalogProducts = [
     category: "Billeteras Hombre",
     name: "Tarjetero Negro",
     description: "Tarjetero compacto de cuero legítimo para tarjetas y billetes doblados.",
-    price: 49000,
+    price: 800,
     variations: {
       "Único": [img_billeteras_hombre_tarjetero_negro_0, img_billeteras_hombre_tarjetero_negro_1, img_billeteras_hombre_tarjetero_negro_2],
     }
@@ -286,7 +286,7 @@ export const catalogProducts = [
     category: "Bolso Mano Hombre",
     name: "Bolso de Mano - Modelo 1",
     description: "Neceser de mano confeccionado en cuero vacuno legítimo de primera selección.",
-    price: 199000,
+    price: 2200,
     variations: {
       "Único": [img_bolso_mano_hombre_bolso_1_0, img_bolso_mano_hombre_bolso_1_1],
     }
@@ -296,7 +296,7 @@ export const catalogProducts = [
     category: "Bolso Mano Hombre",
     name: "Bolso de Mano - Modelo 2",
     description: "Neceser de mano confeccionado en cuero vacuno legítimo de primera selección.",
-    price: 199000,
+    price: 2200,
     variations: {
       "Único": [img_bolso_mano_hombre_bolso_2_0, img_bolso_mano_hombre_bolso_2_1, img_bolso_mano_hombre_bolso_2_2],
     }
@@ -306,7 +306,7 @@ export const catalogProducts = [
     category: "Carteras",
     name: "Cartera Camel",
     description: "Cartera de hombro estructurada, confeccionada artesanalmente en cuero genuino.",
-    price: 229000,
+    price: 2890,
     variations: {
       "Único": [img_carteras_camel_0, img_carteras_camel_1, img_carteras_camel_2, img_carteras_camel_3, img_carteras_camel_4, img_carteras_camel_5],
     }
@@ -316,7 +316,7 @@ export const catalogProducts = [
     category: "Carteras",
     name: "Cartera Cow",
     description: "Cartera de hombro estructurada, confeccionada artesanalmente en cuero genuino.",
-    price: 229000,
+    price: 3490,
     variations: {
       "Único": [img_carteras_cow_0, img_carteras_cow_1, img_carteras_cow_2],
     }
@@ -326,7 +326,7 @@ export const catalogProducts = [
     category: "Carteras",
     name: "Cartera Negra",
     description: "Cartera de hombro estructurada, confeccionada artesanalmente en cuero genuino.",
-    price: 229000,
+    price: 2990,
     variations: {
       "Único": [img_carteras_negra_0, img_carteras_negra_1, img_carteras_negra_2, img_carteras_negra_3, img_carteras_negra_4, img_carteras_negra_5],
     }
@@ -336,7 +336,7 @@ export const catalogProducts = [
     category: "Carteras",
     name: "Cartera Print Dorada",
     description: "Cartera de hombro estructurada, confeccionada artesanalmente en cuero genuino.",
-    price: 229000,
+    price: 3190,
     variations: {
       "Único": [img_carteras_print_dorada_0],
     }
@@ -346,7 +346,7 @@ export const catalogProducts = [
     category: "Carteras",
     name: "Cartera Print Marrón",
     description: "Cartera de hombro estructurada, confeccionada artesanalmente en cuero genuino.",
-    price: 229000,
+    price: 3290,
     variations: {
       "Único": [img_carteras_print_marron_0, img_carteras_print_marron_1, img_carteras_print_marron_2, img_carteras_print_marron_3],
     }
@@ -356,7 +356,7 @@ export const catalogProducts = [
     category: "Carteras",
     name: "Cartera Print Negra",
     description: "Cartera de hombro estructurada, confeccionada artesanalmente en cuero genuino.",
-    price: 229000,
+    price: 3390,
     variations: {
       "Único": [img_carteras_print_negra_0, img_carteras_print_negra_1],
     }
@@ -366,7 +366,7 @@ export const catalogProducts = [
     category: "Carteras",
     name: "Cartera Roja",
     description: "Cartera de hombro estructurada, confeccionada artesanalmente en cuero genuino.",
-    price: 229000,
+    price: 2790,
     variations: {
       "Único": [img_carteras_roja_0, img_carteras_roja_1, img_carteras_roja_2, img_carteras_roja_3, img_carteras_roja_4],
     }
@@ -376,7 +376,7 @@ export const catalogProducts = [
     category: "Materas",
     name: "Matera Chocolate",
     description: "Práctica y elegante matera con diseño tipo cartera para llevar tu termo y mate con estilo.",
-    price: 159000,
+    price: 2400,
     variations: {
       "Único": [img_materas_chocolate_0, img_materas_chocolate_1, img_materas_chocolate_2, img_materas_chocolate_3],
     }
@@ -386,7 +386,7 @@ export const catalogProducts = [
     category: "Materas",
     name: "Matera Cow",
     description: "Práctica y elegante matera con diseño tipo cartera para llevar tu termo y mate con estilo.",
-    price: 159000,
+    price: 2400,
     variations: {
       "Único": [img_materas_cow_0, img_materas_cow_1, img_materas_cow_2, img_materas_cow_3],
     }
@@ -396,7 +396,7 @@ export const catalogProducts = [
     category: "Materas",
     name: "Matera Negra",
     description: "Práctica y elegante matera con diseño tipo cartera para llevar tu termo y mate con estilo.",
-    price: 159000,
+    price: 2400,
     variations: {
       "Único": [img_materas_negra_0, img_materas_negra_1, img_materas_negra_2, img_materas_negra_3],
     }
@@ -406,7 +406,7 @@ export const catalogProducts = [
     category: "Materas",
     name: "Matera Negra Y Blanco",
     description: "Práctica y elegante matera con diseño tipo cartera para llevar tu termo y mate con estilo.",
-    price: 159000,
+    price: 2400,
     variations: {
       "Único": [img_materas_negra_y_blanco_0, img_materas_negra_y_blanco_1],
     }
@@ -416,7 +416,7 @@ export const catalogProducts = [
     category: "Materas",
     name: "Matera Verde Agua",
     description: "Práctica y elegante matera con diseño tipo cartera para llevar tu termo y mate con estilo.",
-    price: 159000,
+    price: 2400,
     variations: {
       "Único": [img_materas_verde_agua_0, img_materas_verde_agua_1, img_materas_verde_agua_2, img_materas_verde_agua_3, img_materas_verde_agua_4, img_materas_verde_agua_5],
     }
@@ -426,7 +426,7 @@ export const catalogProducts = [
     category: "Materas Auto",
     name: "Matera de Auto Azul",
     description: "Matera cilíndrica de cuero diseñada especialmente para el portavasos del auto.",
-    price: 129000,
+    price: 3500,
     variations: {
       "Único": [img_materas_auto_azul_0, img_materas_auto_azul_1, img_materas_auto_azul_2, img_materas_auto_azul_3, img_materas_auto_azul_4],
     }
@@ -436,7 +436,7 @@ export const catalogProducts = [
     category: "Materas Auto",
     name: "Matera de Auto Chocolate",
     description: "Matera cilíndrica de cuero diseñada especialmente para el portavasos del auto.",
-    price: 129000,
+    price: 3500,
     variations: {
       "Único": [img_materas_auto_chocolate_0, img_materas_auto_chocolate_1, img_materas_auto_chocolate_2, img_materas_auto_chocolate_3, img_materas_auto_chocolate_4],
     }
@@ -446,7 +446,7 @@ export const catalogProducts = [
     category: "Materas Auto",
     name: "Matera de Auto Dorada",
     description: "Matera cilíndrica de cuero diseñada especialmente para el portavasos del auto.",
-    price: 129000,
+    price: 3500,
     variations: {
       "Único": [img_materas_auto_dorada_0, img_materas_auto_dorada_1, img_materas_auto_dorada_2, img_materas_auto_dorada_3, img_materas_auto_dorada_4, img_materas_auto_dorada_5],
     }
@@ -456,7 +456,7 @@ export const catalogProducts = [
     category: "Materas Auto",
     name: "Matera de Auto Negra",
     description: "Matera cilíndrica de cuero diseñada especialmente para el portavasos del auto.",
-    price: 129000,
+    price: 3500,
     variations: {
       "Único": [img_materas_auto_negra_0, img_materas_auto_negra_1, img_materas_auto_negra_2, img_materas_auto_negra_3],
     }
@@ -466,7 +466,7 @@ export const catalogProducts = [
     category: "Materas Auto",
     name: "Matera de Auto Terracota",
     description: "Matera cilíndrica de cuero diseñada especialmente para el portavasos del auto.",
-    price: 129000,
+    price: 3500,
     variations: {
       "Único": [img_materas_auto_terracota_0, img_materas_auto_terracota_1, img_materas_auto_terracota_2, img_materas_auto_terracota_3, img_materas_auto_terracota_4],
     }
@@ -476,7 +476,7 @@ export const catalogProducts = [
     category: "Materas Auto",
     name: "Matera de Auto Verde",
     description: "Matera cilíndrica de cuero diseñada especialmente para el portavasos del auto.",
-    price: 129000,
+    price: 3500,
     variations: {
       "Único": [img_materas_auto_verde_0, img_materas_auto_verde_1, img_materas_auto_verde_2, img_materas_auto_verde_3, img_materas_auto_verde_4, img_materas_auto_verde_5, img_materas_auto_verde_6],
     }

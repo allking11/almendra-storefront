@@ -1023,7 +1023,7 @@ function CatalogSection() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {filteredProducts.map(product => {
             const firstVarName = Object.keys(product.variations)[0];
             const coverImage = product.variations[firstVarName][0];
@@ -1043,29 +1043,29 @@ function CatalogSection() {
                     className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
                   {totalVars > 1 && (
-                    <div className="absolute top-4 left-4 bg-chocolate/85 text-crema text-[9px] font-bold tracking-widest uppercase py-1 px-2.5 rounded-[2px]">
+                    <div className="absolute top-3 left-3 bg-chocolate/85 text-crema text-[8px] font-bold tracking-widest uppercase py-0.5 px-2 rounded-[2px]">
                       {totalVars} colores
                     </div>
                   )}
                 </div>
 
                 {/* Details */}
-                <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="p-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="text-[9px] font-bold tracking-widest uppercase text-tierra/60">{product.category}</span>
-                    <h3 className="font-serif text-xl text-chocolate mt-2 font-medium group-hover:text-cuero transition-colors">
+                    <span className="text-[8px] font-bold tracking-widest uppercase text-tierra/60">{product.category}</span>
+                    <h3 className="font-serif text-base text-chocolate mt-1.5 font-medium group-hover:text-cuero transition-colors line-clamp-1">
                       {product.name}
                     </h3>
-                    <p className="mt-2.5 text-xs text-chocolate/60 leading-relaxed font-light line-clamp-2">
+                    <p className="mt-1.5 text-xs text-chocolate/60 leading-relaxed font-light line-clamp-2">
                       {product.description}
                     </p>
                   </div>
-                  <div className="mt-6 pt-4 border-t border-arena/10 flex items-center justify-between">
-                    <span className="font-serif text-lg font-semibold text-cuero">
+                  <div className="mt-4 pt-3 border-t border-arena/10 flex items-center justify-between">
+                    <span className="font-serif text-base font-semibold text-cuero">
                       {formatPrice(product.price)}
                     </span>
-                    <span className="text-[10px] font-bold tracking-widest uppercase text-chocolate border-b border-chocolate/30 pb-0.5 group-hover:border-cuero group-hover:text-cuero transition-all">
-                      Ver Detalles
+                    <span className="text-[9px] font-bold tracking-widest uppercase text-chocolate border-b border-chocolate/30 pb-0.5 group-hover:border-cuero group-hover:text-cuero transition-all">
+                      Detalles
                     </span>
                   </div>
                 </div>
