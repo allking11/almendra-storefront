@@ -22,8 +22,6 @@ import {
 } from "@phosphor-icons/react";
 
 import logoSeed from "../logo_seed.png";
-import logoPrimary from "../logo (2).PNG";
-import logoFooter from "../logo (3).PNG";
 import cowPrint from "../cow print.jpeg";
 import carteraCow from "../cartera 2.jpeg";
 import materaBlack from "../matera.jpeg";
@@ -140,10 +138,10 @@ function CartProvider({ children }) {
     if (!items.length) return;
     const lines = items
       .map((item) => `${item.quantity} x ${item.name} (${formatPrice(item.price)})`)
-      .join("%0A");
+      .join("\n");
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const message = `Hola%2C%20quiero%20realizar%20un%20pedido%20de%20Almendra%3A%0A%0A${lines}%0A%0ATotal%3A%20${formatPrice(total)}%0A%0AMe%20gustar%C3%ADa%20coordinar%20el%20env%C3%ADo.`;
-    window.location.href = `https://wa.me/59896909600?text=${message}`;
+    const message = `Hola, quiero realizar un pedido de Almendra:\n\n${lines}\n\nTotal: ${formatPrice(total)}\n\nMe gustaría coordinar el envío.`;
+    window.location.href = `https://wa.me/59896909600?text=${encodeURIComponent(message)}`;
   };
 
   const [page, setPage] = useState("inicio");
@@ -156,6 +154,17 @@ function CartProvider({ children }) {
         window.scrollTo({ top: 0 });
       } else {
         setPage("inicio");
+        if (h && h !== "#inicio") {
+          const id = h.replace("#", "");
+          setTimeout(() => {
+            const element = document.getElementById(id);
+            if (element) {
+              element.scrollIntoView({ behavior: "smooth" });
+            }
+          }, 150);
+        } else if (h === "#inicio") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
       }
     };
     handleHashChange();
@@ -206,7 +215,6 @@ function Reveal({ children, delay = 0, className = "" }) {
 export function OptimizedVideoPlayer({ src, poster, className = "" }) {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -239,14 +247,6 @@ export function OptimizedVideoPlayer({ src, poster, className = "" }) {
     }
   };
 
-  const handleMuteClick = (e) => {
-    e.stopPropagation();
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    setIsMuted(video.muted);
-  };
-
   return (
     <div className={`relative overflow-hidden bg-chocolate/5 group cursor-pointer ${className}`} onClick={handleVideoClick}>
       <video
@@ -259,18 +259,7 @@ export function OptimizedVideoPlayer({ src, poster, className = "" }) {
         className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
       />
       
-      <div className="absolute inset-0 bg-gradient-to-t from-chocolate/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4 pointer-events-none">
-        <div className="flex justify-end w-full">
-          <button
-            type="button"
-            onClick={handleMuteClick}
-            className="pointer-events-auto bg-chocolate/60 hover:bg-cuero text-white p-2 rounded-full backdrop-blur-xs transition-colors"
-            aria-label={isMuted ? "Activar sonido" : "Desactivar sonido"}
-          >
-            {isMuted ? <SpeakerSlash size={14} /> : <SpeakerHigh size={14} />}
-          </button>
-        </div>
-
+      <div className="absolute inset-0 bg-gradient-to-t from-chocolate/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 pointer-events-none">
         <div>
           {!isPlaying && (
             <span className="bg-cuero/95 text-white text-[9px] tracking-widest uppercase font-bold py-1.5 px-3 rounded-full inline-flex items-center gap-1.5 backdrop-blur-xs">
@@ -464,7 +453,7 @@ function FeaturedCollection() {
 
   const featured = useMemo(() => {
     const items = [];
-    const ids = ["prod-cartera-cuero", "prod-matera-cartera", "prod-matera-auto", "prod-billetera-hombre"];
+    const ids = ["prod-carteras-cow", "prod-materas-chocolate", "prod-materas_auto-azul", "prod-billeteras_hombre-azul"];
     ids.forEach(id => {
       const match = catalogProducts.find(p => p.id === id);
       if (match) items.push(match);
@@ -712,7 +701,7 @@ function EverydayBagPromo() {
   const promoProduct = {
     id: "everyday-bag",
     name: "The Everyday Bag",
-    price: 239000,
+    price: 2390,
     image: camelCartera,
     description: "Cuero genuino. Interior reforzado. Hecho artesanalmente en Uruguay.",
   };
@@ -729,7 +718,7 @@ function EverydayBagPromo() {
             Cuero genuino. Interior reforzado. <br /> Hecho artesanalmente en Uruguay.
           </p>
           <p className="mt-6 font-serif text-3xl font-medium text-chocolate">
-            $ 239.000
+            $ 2.390
           </p>
           <div className="mt-10">
             <button
@@ -1181,20 +1170,11 @@ function CatalogSection() {
 
 function ProductDetailModal() {
   const { selectedProduct, setSelectedProduct, addItem, formatPrice } = useCart();
-  const [selectedVar, setSelectedVar] = useState("");
+  
+  const variations = Object.keys(selectedProduct.variations);
+  const [selectedVar, setSelectedVar] = useState(variations[0] || "");
   const [activePhotoIdx, setActivePhotoIdx] = useState(0);
 
-  useEffect(() => {
-    if (selectedProduct) {
-      const vars = Object.keys(selectedProduct.variations);
-      setSelectedVar(vars[0]);
-      setActivePhotoIdx(0);
-    }
-  }, [selectedProduct]);
-
-  if (!selectedProduct) return null;
-
-  const variations = Object.keys(selectedProduct.variations);
   const basePhotos = selectedProduct.variations[selectedVar] || [];
   const currentPhotos = selectedProduct.id === "prod-carteras-negra"
     ? [...basePhotos, "video"]
@@ -1206,7 +1186,7 @@ function ProductDetailModal() {
     if (val.includes("azul")) return { backgroundColor: "#3A5A80" };
     if (val.includes("camel")) return { backgroundColor: "#C19A6B" };
     if (val.includes("chocolate")) return { backgroundColor: "#5C3F33" };
-    if (val.includes("marron")) return { backgroundColor: "#8B5A2B" };
+    if (val.includes("marron") || val.includes("marrón")) return { backgroundColor: "#8B5A2B" };
     if (val.includes("negra") || val.includes("negro")) return { backgroundColor: "#1A1A1A" };
     if (val.includes("roja") || val.includes("rojo")) return { backgroundColor: "#B91C1C" };
     if (val.includes("verde")) return { backgroundColor: "#2E5A44" };
@@ -1603,7 +1583,7 @@ function AppShell() {
       <NewsletterBanner />
       <Footer />
       <CartDrawer />
-      <ProductDetailModal />
+      {selectedProduct && <ProductDetailModal key={selectedProduct.id} />}
     </div>
   );
 }
