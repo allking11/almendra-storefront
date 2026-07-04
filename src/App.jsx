@@ -1336,11 +1336,11 @@ function CartDrawer() {
 
           {/* Panel */}
           <motion.aside
-            initial={{ x: "100%" }}
+            initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: "-100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 220 }}
-            className="fixed bottom-0 right-0 top-0 z-50 w-full max-w-[440px] bg-crema shadow-2xl flex flex-col justify-between"
+            className="fixed bottom-0 left-0 top-0 z-50 w-full max-w-[440px] bg-crema shadow-2xl flex flex-col justify-between"
             aria-label="Pedido"
           >
             {/* Top Bar */}
