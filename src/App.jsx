@@ -156,7 +156,7 @@ function CartProvider({ children }) {
       .join("\n");
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const message = `Hola, quiero realizar un pedido de Almendra:\n\n${lines}\n\nTotal: ${formatPrice(total)}\n\nMe gustaría coordinar el envío.`;
-    window.location.href = `https://wa.me/59896909600?text=${encodeURIComponent(message)}`;
+    window.open(`https://wa.me/59896909600?text=${encodeURIComponent(message)}`, "_blank", "noopener,noreferrer");
   };
 
   const [page, setPage] = useState("inicio");
@@ -301,6 +301,13 @@ function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (page === "inicio") {
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
+  }, [page, setSearchQuery]);
 
   return (
     <header
@@ -1262,15 +1269,26 @@ function CatalogSection() {
 function ProductDetailModal() {
   const { selectedProduct, setSelectedProduct, addItem, formatPrice } = useCart();
   
-  const variations = Object.keys(selectedProduct.variations);
+  // Cache the last active product to avoid crash during exit animations
+  const [localProduct, setLocalProduct] = useState(selectedProduct);
+  
+  useEffect(() => {
+    if (selectedProduct) {
+      setLocalProduct(selectedProduct);
+    }
+  }, [selectedProduct]);
+
+  if (!localProduct) return null;
+
+  const variations = localProduct.variations ? Object.keys(localProduct.variations) : [];
   const [selectedVar, setSelectedVar] = useState(variations[0] || "");
   const [activePhotoIdx, setActivePhotoIdx] = useState(0);
 
-  const basePhotos = selectedProduct.variations[selectedVar] || [];
-  const currentPhotos = selectedProduct.id === "prod-carteras-negra"
+  const basePhotos = localProduct.variations?.[selectedVar] || [];
+  const currentPhotos = localProduct.id === "prod-carteras-negra"
     ? [...basePhotos, "video"]
     : basePhotos;
-  const currentCover = currentPhotos[activePhotoIdx] || currentPhotos[0];
+  const currentCover = currentPhotos[activePhotoIdx] || currentPhotos[0] || localProduct.image;
 
   const getVariationColorStyle = (v) => {
     const val = v.toLowerCase();
@@ -1297,163 +1315,161 @@ function ProductDetailModal() {
   };
 
   return (
-    <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Backdrop */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={() => setSelectedProduct(null)}
+        className="fixed inset-0 bg-chocolate/60 backdrop-blur-xs"
+      />
+
+      {/* Modal Content */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 15 }}
+        transition={{ type: "spring", damping: 25, stiffness: 250 }}
+        className="relative z-10 w-full max-w-4xl bg-crema shadow-2xl rounded-[4px] overflow-hidden grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] max-h-[90vh] lg:max-h-[85vh] lg:h-[80vh] overflow-y-auto lg:overflow-hidden"
+      >
+        {/* Close button */}
+        <button
+          type="button"
           onClick={() => setSelectedProduct(null)}
-          className="fixed inset-0 bg-chocolate/60 backdrop-blur-xs"
-        />
-
-        {/* Modal Content */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 15 }}
-          transition={{ type: "spring", damping: 25, stiffness: 250 }}
-          className="relative z-10 w-full max-w-4xl bg-crema shadow-2xl rounded-[4px] overflow-hidden grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] max-h-[90vh] lg:max-h-[85vh] lg:h-[80vh] overflow-y-auto lg:overflow-hidden"
+          className="absolute top-4 right-4 z-20 h-10 w-10 flex items-center justify-center rounded-full bg-white/80 border border-chocolate/10 text-chocolate hover:bg-white transition-colors"
+          aria-label="Cerrar vista rápida"
         >
-          {/* Close button */}
-          <button
-            type="button"
-            onClick={() => setSelectedProduct(null)}
-            className="absolute top-4 right-4 z-20 h-10 w-10 flex items-center justify-center rounded-full bg-white/80 border border-chocolate/10 text-chocolate hover:bg-white transition-colors"
-            aria-label="Cerrar vista rápida"
-          >
-            <X size={18} />
-          </button>
+          <X size={18} />
+        </button>
 
-          {/* Left Side: Photo Gallery */}
-          <div className="p-6 lg:p-10 flex flex-col justify-start bg-arena/5 lg:overflow-y-auto lg:max-h-full">
-            <div className="aspect-[4/5] overflow-hidden rounded-[2px] bg-white border border-arena/20 shadow-xs relative">
-              {currentPhotos[activePhotoIdx] === "video" ? (
-                <OptimizedVideoPlayer
-                  src={videoCarteraNegra}
-                  className="w-full h-full"
-                />
-              ) : (
-                <img
-                  src={currentCover}
-                  alt={`${selectedProduct.name} - ${selectedVar}`}
-                  className="h-full w-full object-cover transition-all duration-300"
-                />
-              )}
-              {currentPhotos.length > 1 && (
-                <div className="absolute bottom-4 right-4 bg-chocolate/85 text-crema text-[10px] font-bold py-1 px-3 rounded-[2px] z-10">
-                  {activePhotoIdx + 1} / {currentPhotos.length}
-                </div>
-              )}
-            </div>
-
-            {/* Thumbnail selector */}
+        {/* Left Side: Photo Gallery */}
+        <div className="p-6 lg:p-10 flex flex-col justify-start bg-arena/5 lg:overflow-y-auto lg:max-h-full">
+          <div className="aspect-[4/5] overflow-hidden rounded-[2px] bg-white border border-arena/20 shadow-xs relative">
+            {currentPhotos[activePhotoIdx] === "video" ? (
+              <OptimizedVideoPlayer
+                src={videoCarteraNegra}
+                className="w-full h-full"
+              />
+            ) : (
+              <img
+                src={currentCover}
+                alt={`${localProduct.name} - ${selectedVar}`}
+                className="h-full w-full object-cover transition-all duration-300"
+              />
+            )}
             {currentPhotos.length > 1 && (
-              <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-thin">
-                {currentPhotos.map((photo, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActivePhotoIdx(idx)}
-                    className={`h-16 w-14 flex-shrink-0 rounded-[2px] overflow-hidden border transition-all ${
-                      idx === activePhotoIdx
-                        ? "border-cuero ring-2 ring-cuero/20"
-                        : "border-arena/30 hover:border-arena"
-                    }`}
-                  >
-                    {photo === "video" ? (
-                      <div className="w-full h-full bg-chocolate text-crema flex flex-col items-center justify-center gap-1">
-                        <Play size={16} weight="fill" />
-                        <span className="text-[8px] font-bold tracking-widest uppercase">Video</span>
-                      </div>
-                    ) : (
-                      <img src={photo} alt="" className="h-full w-full object-cover" />
-                    )}
-                  </button>
-                ))}
+              <div className="absolute bottom-4 right-4 bg-chocolate/85 text-crema text-[10px] font-bold py-1 px-3 rounded-[2px] z-10">
+                {activePhotoIdx + 1} / {currentPhotos.length}
               </div>
             )}
           </div>
 
-          {/* Right Side: Details */}
-          <div className="p-6 lg:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-arena/20 lg:overflow-y-auto lg:max-h-full">
-            <div>
-              <span className="text-[10px] tracking-[0.2em] font-semibold text-tierra uppercase">
-                {selectedProduct.category}
-              </span>
-              <h2 className="font-serif text-3xl md:text-4xl text-chocolate mt-3 font-medium leading-tight">
-                {selectedProduct.name}
-              </h2>
-              <p className="mt-4 text-xs leading-relaxed text-chocolate/70 font-light">
-                {selectedProduct.description}
-              </p>
-
-              <div className="h-[1px] w-full bg-arena/20 my-6" />
-
-              {/* Variations selector */}
-              {variations.length > 0 && variations[0] !== "Único" && (
-                <div className="space-y-3">
-                  <span className="block text-xs font-bold tracking-widest text-chocolate uppercase">
-                    Color / Variación: <span className="text-cuero font-semibold">{selectedVar}</span>
-                  </span>
-                  <div className="flex flex-wrap gap-3">
-                    {variations.map((v) => {
-                      const colorStyle = getVariationColorStyle(v);
-                      const isSelected = selectedVar === v;
-                      return (
-                        <button
-                          key={v}
-                          type="button"
-                          onClick={() => {
-                            setSelectedVar(v);
-                            setActivePhotoIdx(0);
-                          }}
-                          className={`h-8 w-8 rounded-full border transition-all duration-300 relative flex items-center justify-center ${
-                            isSelected
-                              ? "border-cuero ring-2 ring-cuero/30 scale-110"
-                              : "border-arena/40 hover:scale-105"
-                          }`}
-                          style={colorStyle}
-                          title={v}
-                        >
-                          {isSelected && (
-                            <span className="absolute inset-0 flex items-center justify-center text-white drop-shadow-md">
-                              <Check size={12} weight="bold" className={v.toLowerCase().includes("blanco") ? "text-chocolate" : "text-white"} />
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+          {/* Thumbnail selector */}
+          {currentPhotos.length > 1 && (
+            <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-thin">
+              {currentPhotos.map((photo, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setActivePhotoIdx(idx)}
+                  className={`h-16 w-14 flex-shrink-0 rounded-[2px] overflow-hidden border transition-all ${
+                    idx === activePhotoIdx
+                      ? "border-cuero ring-2 ring-cuero/20"
+                      : "border-arena/30 hover:border-arena"
+                  }`}
+                >
+                  {photo === "video" ? (
+                    <div className="w-full h-full bg-chocolate text-crema flex flex-col items-center justify-center gap-1">
+                      <Play size={16} weight="fill" />
+                      <span className="text-[8px] font-bold tracking-widest uppercase">Video</span>
+                    </div>
+                  ) : (
+                    <img src={photo} alt="" className="h-full w-full object-cover" />
+                  )}
+                </button>
+              ))}
             </div>
+          )}
+        </div>
 
-            {/* Price & Cart Actions */}
-            <div className="mt-8 pt-6 border-t border-arena/20">
-              <div className="flex items-baseline justify-between mb-4">
-                <span className="text-xs font-bold tracking-widest text-chocolate/50 uppercase">Precio</span>
-                <span className="font-serif text-3xl font-semibold text-cuero">
-                  {formatPrice(selectedProduct.price)}
+        {/* Right Side: Details */}
+        <div className="p-6 lg:p-10 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-arena/20 lg:overflow-y-auto lg:max-h-full">
+          <div>
+            <span className="text-[10px] tracking-[0.2em] font-semibold text-tierra uppercase">
+              {localProduct.category}
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl text-chocolate mt-3 font-medium leading-tight">
+              {localProduct.name}
+            </h2>
+            <p className="mt-4 text-xs leading-relaxed text-chocolate/70 font-light">
+              {localProduct.description}
+            </p>
+
+            <div className="h-[1px] w-full bg-arena/20 my-6" />
+
+            {/* Variations selector */}
+            {variations.length > 0 && variations[0] !== "Único" && (
+              <div className="space-y-3">
+                <span className="block text-xs font-bold tracking-widest text-chocolate uppercase">
+                  Color / Variación: <span className="text-cuero font-semibold">{selectedVar}</span>
                 </span>
+                <div className="flex flex-wrap gap-3">
+                  {variations.map((v) => {
+                    const colorStyle = getVariationColorStyle(v);
+                    const isSelected = selectedVar === v;
+                    return (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => {
+                          setSelectedVar(v);
+                          setActivePhotoIdx(0);
+                        }}
+                        className={`h-8 w-8 rounded-full border transition-all duration-300 relative flex items-center justify-center ${
+                          isSelected
+                            ? "border-cuero ring-2 ring-cuero/30 scale-110"
+                            : "border-arena/40 hover:scale-105"
+                        }`}
+                        style={colorStyle}
+                        title={v}
+                      >
+                        {isSelected && (
+                          <span className="absolute inset-0 flex items-center justify-center text-white drop-shadow-md">
+                            <Check size={12} weight="bold" className={v.toLowerCase().includes("blanco") ? "text-chocolate" : "text-white"} />
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  addItem(selectedProduct, selectedVar);
-                  setSelectedProduct(null);
-                }}
-                className="w-full flex items-center justify-center gap-2.5 bg-cuero text-white py-4 text-xs font-bold tracking-widest uppercase hover:bg-chocolate transition-colors"
-              >
-                Sumar al pedido <ShoppingBag size={16} />
-              </button>
-            </div>
+            )}
           </div>
-        </motion.div>
-      </div>
-    </AnimatePresence>
+
+          {/* Price & Cart Actions */}
+          <div className="mt-8 pt-6 border-t border-arena/20">
+            <div className="flex items-baseline justify-between mb-4">
+              <span className="text-xs font-bold tracking-widest text-chocolate/50 uppercase">Precio</span>
+              <span className="font-serif text-3xl font-semibold text-cuero">
+                {formatPrice(localProduct.price)}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                addItem(localProduct, selectedVar);
+                setSelectedProduct(null);
+              }}
+              className="w-full flex items-center justify-center gap-2.5 bg-cuero text-white py-4 text-xs font-bold tracking-widest uppercase hover:bg-chocolate transition-colors"
+            >
+              Sumar al pedido <ShoppingBag size={16} />
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
@@ -1648,7 +1664,7 @@ function CartDrawer() {
 }
 
 function AppShell() {
-  const { page } = useCart();
+  const { page, selectedProduct } = useCart();
   return (
     <div className="min-h-screen overflow-x-hidden bg-crema text-chocolate">
       <Header />
@@ -1674,7 +1690,9 @@ function AppShell() {
       <NewsletterBanner />
       <Footer />
       <CartDrawer />
-      {selectedProduct && <ProductDetailModal key={selectedProduct.id} />}
+      <AnimatePresence>
+        {selectedProduct && <ProductDetailModal key={selectedProduct.id} />}
+      </AnimatePresence>
     </div>
   );
 }
