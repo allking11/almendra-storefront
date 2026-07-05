@@ -17,21 +17,13 @@ import {
   Check,
   Storefront,
   Play,
-  SpeakerHigh,
-  SpeakerSlash,
 } from "@phosphor-icons/react";
 
-import logoSeed from "../logo_seed.png";
-import cowPrint from "../cow print.jpeg";
-import carteraCow from "../cartera 2.jpeg";
-import materaBlack from "../matera.jpeg";
-import materaHandle from "../matera 2.jpeg";
-import minimalBag from "../almendra cartera.jpeg";
-import saleBag from "../sale.jpeg";
-import modelExterior from "../foto con modelo exterior.jpeg";
-import exteriorMate from "../fotos exteriores.jpeg";
-import exteriorCow from "../fotos exteriores2.jpeg";
-import exteriorLine from "../fotos exteriores3.jpeg";
+import logoSeed from "../logo_seed.webp";
+import carteraCow from "../cartera 2.webp";
+import minimalBag from "../almendra cartera.webp";
+import modelExterior from "../foto con modelo exterior.webp";
+import exteriorLine from "../fotos exteriores3.webp";
 
 import videoTaller from "../taller.mp4";
 import videoCarteraNegra from "../cartera_negra.mp4";
@@ -39,18 +31,18 @@ import videoMaterasCarrasco from "../materas_carrasco.mp4";
 import videoRamblaLogo from "../rambla_logo.mp4";
 
 // Generated banners for slideshow
-import bannerMateraBlack from "../banner_matera_black.jpg";
-import bannerCarteraCow from "../banner_cartera_cow.jpg";
-import bannerMateraWood from "../banner_matera_wood.jpg";
+import bannerMateraBlack from "../banner_matera_black.webp";
+import bannerCarteraCow from "../banner_cartera_cow.webp";
+import bannerMateraWood from "../banner_matera_wood.webp";
 
 // Generated assets
-import procesoCorte from "../proceso_corte.jpg";
-import procesoCostura from "../proceso_costura.jpg";
-import procesoLogo from "../proceso_logo.jpg";
-import fallbackBilleteraMujer from "../billetera_mujer.jpg";
-import camelCartera from "./assets/catalogo/carteras/camel/img_0.png";
-import carteraCrescent from "../cartera_crescent.jpg";
-import mochilaOlivia from "../mochila_olivia.jpg";
+import procesoCorte from "../proceso_corte.webp";
+import procesoCostura from "../proceso_costura.webp";
+import procesoLogo from "../proceso_logo.webp";
+import fallbackBilleteraMujer from "../billetera_mujer.webp";
+import camelCartera from "./assets/catalogo/carteras/camel/img_0.webp";
+import carteraCrescent from "../cartera_crescent.webp";
+import mochilaOlivia from "../mochila_olivia.webp";
 import { catalogProducts } from "./assets/catalogoData";
 
 const WHATSAPP_URL =
