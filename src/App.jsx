@@ -1385,7 +1385,7 @@ function ProductDetailModal() {
                       <span className="text-[8px] font-bold tracking-widest uppercase">Video</span>
                     </div>
                   ) : (
-                    <img src={photo} alt="" className="h-full w-full object-cover" />
+                    <img src={photo} alt={`Miniatura ${idx + 1} de ${localProduct.name}`} className="h-full w-full object-cover" />
                   )}
                 </button>
               ))}
